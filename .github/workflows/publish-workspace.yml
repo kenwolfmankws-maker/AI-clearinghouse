@@ -1,0 +1,34 @@
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      entry:
+        description: "Workspace entry or update"
+        required: true
+      author:
+        description: "Creator name"
+        default: "Ken Wolfman Smalley"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "${{ github.event.inputs.author }}"
+          git config user.email "ken@yourdomain.com"
+
+      - name: Commit Workspace Entry
+        run: |
+          mkdir -p workspace
+          echo "$(date '+%Y-%m-%d %H:%M:%S') — ${{ github.event.inputs.entry }}" >> workspace/log.txt
+          git add workspace/log.txt
+          git commit -m "Workspace entry: ${{ github.event.inputs.entry }}"
+
+          git push
+
