@@ -35,8 +35,18 @@ jobs:
       - name: Append workspace log entry
         run: |
           mkdir -p workspace
+          # Plain text aggregate log
           printf "%s — %s\n" "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" "${{ github.event.inputs.entry }}" >> workspace/log.txt
-          echo "Last 5 lines of log:";
+
+          # Date-based rotation log (one file per day)
+          mkdir -p workspace/logs
+          printf "%s — %s\n" "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" "${{ github.event.inputs.entry }}" >> "workspace/logs/$(date -u '+%Y-%m-%d').log"
+
+          # JSONL structured log for programmatic parsing
+          LOG_JSON=$(jq -n --arg ts "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" --arg author "${{ github.event.inputs.author }}" --arg entry "${{ github.event.inputs.entry }}" '{timestamp:$ts,author:$author,entry:$entry}')
+          echo "$LOG_JSON" >> workspace/log.jsonl
+
+          echo "Last 5 lines of aggregate log:";
           tail -n 5 workspace/log.txt
 
       - name: Commit if there are changes
@@ -45,7 +55,7 @@ jobs:
             echo "No changes detected; nothing to commit.";
             exit 0;
           fi
-          git add workspace/log.txt
+          git add workspace/log.txt workspace/logs workspace/log.jsonl
           git commit -m "Workspace entry: ${{ github.event.inputs.entry }}"
           git push
 
