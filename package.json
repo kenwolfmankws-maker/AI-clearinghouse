@@ -8,7 +8,11 @@
     "start": "node index.js",
     "chat": "node GeorgePortal/chat.js",
     "verify": "node scripts/verify-key.js",
-    "search": "node scripts/search-logs.js"
+    "search": "node scripts/search-logs.js",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
