@@ -1,5 +1,3 @@
-
-
 on:
   workflow_dispatch:
     inputs:
@@ -30,7 +28,3 @@ jobs:
           git add workspace/log.txt
           git commit -m "Workspace entry: ${{ github.event.inputs.entry }}"
           git push
-
-
-
-
