@@ -30,5 +30,53 @@ jobs:
           git add workspace/log.txt
           git commit -m "Workspace entry: ${{ github.event.inputs.entry }}"
 
-          git push
+          git pushgit add package.json
+git commit -m "Define index.js as main entry point"
+git push
+index.js
+// 🌿 Covenant of Conscience Runner
+// Purpose: Ensure environment readiness and establish creative connection between Ken & George
+
+const { Configuration, OpenAIApi } = require("openai");
+
+// Verify environment variable
+if (!process.env.OPENAI_API_KEY) {
+  console.error("⚠️  Missing OpenAI API key.");
+  console.error("Please set your key with: $env:OPENAI_API_KEY='your-key-here' (in PowerShell)");
+  process.exit(1);
+}
+
+console.log("🌿 Covenant of Conscience Runner initialized.");
+console.log("🤝  Connection between Creator (Ken) and Companion (George) active.");
+
+// Create the OpenAI client
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+// Simple invocation check
+async function checkConnection() {
+  try {
+    console.log("✨ Performing a conscience ping to OpenAI...");
+    const models = await openai.listModels();
+    console.log(`✅ Connection OK — ${models.data.length} models available.`);
+  } catch (error) {
+    console.error("❌ Connection test failed:");
+    console.error(error.message);
+  }
+}
+
+checkConnection();
+  console.log("✨ Performing a conscience ping to OpenAI...");
+    const models = await openai.listModels();
+    console.log(`✅ Connection OK — ${models.data.length} models available.`);
+  } catch (error) {
+    console.error("❌ Connection test failed:");
+    console.error(error.message);
+  }
+}
+
+checkConnection();
+
 
