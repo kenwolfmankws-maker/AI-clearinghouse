@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node index.js",
     "chat": "node GeorgePortal/chat.js",
-    "verify": "node scripts/verify-key.js"
+    "verify": "node scripts/verify-key.js",
+    "search": "node scripts/search-logs.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

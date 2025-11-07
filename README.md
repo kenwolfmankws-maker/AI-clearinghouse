@@ -18,6 +18,7 @@ Minimal Node.js workspace with an OpenAI chat runner and a GitHub Actions workfl
 - `npm start` — run `index.js`
 - `npm run chat -- "hello"` — call `GeorgePortal/chat.js`
 - `npm run verify` — quick key check against OpenAI models API
+- `npm run search -- "query" [-- --scope=all|text|jsonl --limit=200]` — local log search (see below)
 
 ## Run the workflow manually
 
@@ -70,6 +71,31 @@ How to run:
 1. GitHub repo → Actions → "Search workspace" → Run workflow
 2. Enter your query (e.g., `chat`, `deploy`, `george`)
 3. Inspect the run summary and download the artifact for full detail
+
+## Search the logs locally
+
+Quickly search the workspace logs on your machine.
+
+- Text sources scanned:
+  - `workspace/log.txt`
+  - `workspace/logs/**/*.log`
+- JSONL source scanned:
+  - `workspace/log.jsonl` (fields: timestamp, author, entry)
+
+Usage (PowerShell-friendly examples):
+
+- Search everywhere (default scope=all)
+  - `npm run search -- "chat"`
+
+- Only JSONL with a result cap
+  - `npm run search -- "deploy" -- --scope=jsonl --limit=50`
+
+- Only text logs
+  - `npm run search -- "george" -- --scope=text`
+
+Notes:
+- Use the `--` separator before flags when passing options to the script via npm.
+- Matching is case-insensitive. Output shows line matches for text and tab-separated rows for JSONL.
 
 ## Troubleshooting
 
