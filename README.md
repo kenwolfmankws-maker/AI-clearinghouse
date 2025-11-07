@@ -54,6 +54,23 @@ Notes:
 - Commits only if a change is detected
 - JSONL lines are produced with `jq -n` to ensure proper escaping
 
+## Search the logs (workflow)
+
+Use `.github/workflows/search-workspace.yml` to search recorded entries.
+
+Inputs:
+- `query` (required): case-insensitive search string
+- `scope` (optional): `all` (default), `text`, or `jsonl`
+
+Outputs:
+- Job Summary includes a markdown view of matched text lines and JSONL rows
+- An artifact `workspace-search-results` with raw outputs (`text.raw`, `jsonl.tsv`)
+
+How to run:
+1. GitHub repo → Actions → "Search workspace" → Run workflow
+2. Enter your query (e.g., `chat`, `deploy`, `george`)
+3. Inspect the run summary and download the artifact for full detail
+
 ## Troubleshooting
 
 - If `npm run verify` fails, ensure `.env` exists and contains a valid key

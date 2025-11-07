@@ -1,0 +1,93 @@
+on:
+  workflow_dispatch:
+    inputs:
+      query:
+        description: "Search query (case-insensitive)"
+        required: true
+      scope:
+        description: "Where to search (all|text|jsonl)"
+        required: false
+        default: "all"
+
+permissions:
+  contents: read
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare result directory
+        run: |
+          mkdir -p search-results
+
+      - name: Search text logs (log.txt and logs/*.log)
+        if: ${{ inputs.scope == 'all' || inputs.scope == 'text' }}
+        env:
+          QUERY: ${{ github.event.inputs.query }}
+        run: |
+          set -e
+          echo "# Text matches" > search-results/text.md
+          echo "Query: \"$QUERY\"" >> search-results/text.md
+          echo "" >> search-results/text.md
+          # Gather matches, tolerate missing files
+          (
+            test -f workspace/log.txt && grep -in --text --color=never -e "$QUERY" workspace/log.txt || true
+            test -d workspace/logs && grep -inR --text --color=never -e "$QUERY" workspace/logs || true
+          ) | sed 's/^/text: /' | head -n 200 | tee search-results/text.raw > /dev/null
+          if [ -s search-results/text.raw ]; then
+            echo '```' >> search-results/text.md
+            cat search-results/text.raw >> search-results/text.md
+            echo '```' >> search-results/text.md
+          else
+            echo "No matches in text logs." >> search-results/text.md
+          fi
+
+      - name: Search JSONL log (log.jsonl)
+        if: ${{ inputs.scope == 'all' || inputs.scope == 'jsonl' }}
+        env:
+          QUERY: ${{ github.event.inputs.query }}
+        run: |
+          set -e
+          echo "# JSONL matches" > search-results/jsonl.md
+          echo "Query: \"$QUERY\"" >> search-results/jsonl.md
+          echo "" >> search-results/jsonl.md
+          if [ -f workspace/log.jsonl ]; then
+            # Match query against concatenated lowercased fields (timestamp, author, entry)
+            jq -r --arg q "$QUERY" 'select(([[.timestamp,.author,.entry] | map(tostring | ascii_downcase) | join(" ")][] | test($q; "i"))) | [ .timestamp, .author, .entry ] | @tsv' workspace/log.jsonl | head -n 200 > search-results/jsonl.tsv || true
+            if [ -s search-results/jsonl.tsv ]; then
+              echo "| timestamp | author | entry |" >> search-results/jsonl.md
+              echo "|---|---|---|" >> search-results/jsonl.md
+              awk -F "\t" '{ printf("| %s | %s | %s |\n", $1, $2, $3) }' search-results/jsonl.tsv >> search-results/jsonl.md
+            else
+              echo "No matches in JSONL log." >> search-results/jsonl.md
+            fi
+          else
+            echo "No JSONL file found (workspace/log.jsonl)." >> search-results/jsonl.md
+          fi
+
+      - name: Compose summary
+        run: |
+          echo "## Workspace search results" >> $GITHUB_STEP_SUMMARY
+          echo "Query: \`${{ github.event.inputs.query }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Scope: \`${{ github.event.inputs.scope || 'all' }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f search-results/text.md ]; then
+            echo "### Text logs" >> $GITHUB_STEP_SUMMARY
+            cat search-results/text.md >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -f search-results/jsonl.md ]; then
+            echo "### JSONL log" >> $GITHUB_STEP_SUMMARY
+            cat search-results/jsonl.md >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload results artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: workspace-search-results
+          path: search-results
