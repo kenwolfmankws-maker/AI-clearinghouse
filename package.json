@@ -1,59 +1,16 @@
 {
   "name": "ai-clearinghouse",
   "version": "1.0.0",
-  "description": "",
+  "description": "A collaborative space for AI integration and testing.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kenwolfmankws-maker/AI-clearinghouse.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/kenwolfmankws-maker/AI-clearinghouse/issues"
-  },
-  "homepage": "https://github.com/kenwolfmankws-maker/AI-clearinghouse#readme",
-  "dependencies": {
-    "openai": "^6.8.1"
-  }
-}"main": "index.js",
-git add package.json
-git commit -m "Define index.js as main entry point"
-git push
-{
-  "name": "ai-clearinghouse",
-  "version": "1.0.0",
-  "description": "A collaborative space for conscience, creativity, and connection.",
-  "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"(no tests yet)\""
+    "chat": "node GeorgePortal/chat.js",
+    "verify": "node scripts/verify-key.js"
   },
   "dependencies": {
-    "openai": "^4.0.0"
-  },
-  "type": "commonjs",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kenwolfmankws-maker/AI-clearinghouse.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/kenwolfmankws-maker/AI-clearinghouse/issues"
-  },
-  "homepage": "https://github.com/kenwolfmankws-maker/AI-clearinghouse#readme"
+    "dotenv": "^16.4.5",
+    "openai": "^6.8.1"
+  }
 }
-
-$env:OPENAI_API_KEY = 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
-npm install
-npm list --depth=0
-
-
-echo $env:OPENAI_API_KEY
