@@ -8,6 +8,15 @@ on:
         description: "Creator name"
         default: "Ken Wolfman Smalley"
 
+# Explicit permission so the workflow can push commits
+permissions:
+  contents: write
+
+# Avoid overlapping writes to the same log file
+concurrency:
+  group: workspace-log
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -15,16 +24,33 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Configure Git
+      - name: Configure Git identity
         run: |
           git config user.name "${{ github.event.inputs.author }}"
-          git config user.email "ken@yourdomain.com"
+          git config user.email "kenwolfmankws-maker@users.noreply.github.com"
 
-      - name: Commit Workspace Entry
+      - name: Append workspace log entry
         run: |
           mkdir -p workspace
-          echo "$(date '+%Y-%m-%d %H:%M:%S') — ${{ github.event.inputs.entry }}" >> workspace/log.txt
+          printf "%s — %s\n" "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" "${{ github.event.inputs.entry }}" >> workspace/log.txt
+          echo "Last 5 lines of log:";
+          tail -n 5 workspace/log.txt
+
+      - name: Commit if there are changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes detected; nothing to commit.";
+            exit 0;
+          fi
           git add workspace/log.txt
           git commit -m "Workspace entry: ${{ github.event.inputs.entry }}"
           git push
+
+      # - name: Upload log artifact (optional)
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: workspace-log
+      #     path: workspace/log.txt
