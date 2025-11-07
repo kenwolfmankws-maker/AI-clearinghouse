@@ -9,7 +9,8 @@
     "chat": "node GeorgePortal/chat.js",
     "verify": "node scripts/verify-key.js",
     "search": "node scripts/search-logs.js",
-    "test": "jest"
+    "test": "jest",
+    "lint:workflows": "node scripts/validate-workflows.js"
   },
   "devDependencies": {
     "jest": "^29.7.0"
