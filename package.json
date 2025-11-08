@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "web": "node server.js",
+    "web": "node local-server.js",
     "chat": "node GeorgePortal/chat.js",
     "verify": "node scripts/verify-key.js",
     "search": "node scripts/search-logs.js",
