@@ -6,8 +6,15 @@
 let OpenAICtor;
 async function getOpenAI() {
   if (!OpenAICtor) {
-    const mod = await import('openai');
-    OpenAICtor = mod.default || mod.OpenAI || mod;
+    try {
+      console.log('[chat] importing openai SDK');
+      const mod = await import('openai');
+      OpenAICtor = mod.default || mod.OpenAI || mod;
+      console.log('[chat] openai SDK imported');
+    } catch (e) {
+      console.error('[chat] failed to import openai SDK', e);
+      throw new Error('Failed to load OpenAI SDK');
+    }
   }
   return OpenAICtor;
 }
@@ -20,6 +27,11 @@ module.exports = async function handler(req, res) {
 
   try {
     const apiKey = process.env.OPENAI_API_KEY;
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('[chat] OPENAI_API_KEY missing in environment');
+    } else {
+      console.log('[chat] OPENAI_API_KEY present (masked) length=' + (process.env.OPENAI_API_KEY.length));
+    }
     if (!apiKey) {
       return res
         .status(500)
@@ -31,8 +43,9 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Missing "message" in body' });
     }
 
-    const OpenAI = await getOpenAI();
-    const openai = new OpenAI({ apiKey });
+  const OpenAI = await getOpenAI();
+  const openai = new OpenAI({ apiKey });
+  console.log('[chat] creating completion');
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
@@ -41,9 +54,10 @@ module.exports = async function handler(req, res) {
     });
 
     const reply = completion.choices?.[0]?.message?.content || '';
+    console.log('[chat] completion success, chars=' + reply.length);
     return res.status(200).json({ reply });
   } catch (err) {
-    console.error('API error:', err?.response?.data || err?.message || err);
+    console.error('[chat] API error:', err?.response?.data || err?.message || err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
