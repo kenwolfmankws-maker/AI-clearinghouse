@@ -11,14 +11,17 @@
     "search": "node scripts/search-logs.js",
     "test": "jest",
     "lint:workflows": "node scripts/validate-workflows.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "web": "node server.js"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "husky": "^9.0.11"
+    "husky": "^9.0.11",
+    "jest": "^29.7.0"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^5.1.0",
     "openai": "^6.8.1"
   }
 }
