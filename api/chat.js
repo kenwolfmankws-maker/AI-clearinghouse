@@ -1,45 +1,40 @@
+// Vercel Serverless Function: POST /api/chat
+// Expects JSON: { message: string }
+// Returns JSON: { reply: string }
+
 const OpenAI = require('openai');
 
-module.exports = async (req, res) => {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    const { message } = req.body;
-
-    if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return res
+        .status(500)
+        .json({ error: 'Server misconfigured: missing OPENAI_API_KEY' });
     }
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    });
+    const { message } = req.body || {};
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ error: 'Missing "message" in body' });
+    }
+
+    const openai = new OpenAI({ apiKey });
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: message }],
-      max_tokens: 500
+      temperature: 0.7,
     });
 
-    const reply = completion.choices[0].message.content;
-    res.status(200).json({ reply });
-
-  } catch (error) {
-    console.error('Chat error:', error);
-    res.status(500).json({ 
-      error: 'Failed to get response',
-      details: error.message 
-    });
+    const reply = completion.choices?.[0]?.message?.content || '';
+    return res.status(200).json({ reply });
+  } catch (err) {
+    console.error('API error:', err?.response?.data || err?.message || err);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
