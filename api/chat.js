@@ -2,7 +2,15 @@
 // Expects JSON: { message: string }
 // Returns JSON: { reply: string }
 
-const OpenAI = require('openai');
+// Use dynamic import to be compatible with ESM-only 'openai' package on Vercel
+let OpenAICtor;
+async function getOpenAI() {
+  if (!OpenAICtor) {
+    const mod = await import('openai');
+    OpenAICtor = mod.default || mod.OpenAI || mod;
+  }
+  return OpenAICtor;
+}
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -23,6 +31,7 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Missing "message" in body' });
     }
 
+    const OpenAI = await getOpenAI();
     const openai = new OpenAI({ apiKey });
 
     const completion = await openai.chat.completions.create({
