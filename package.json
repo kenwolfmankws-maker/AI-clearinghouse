@@ -15,7 +15,8 @@
     "search": "node scripts/search-logs.js",
     "test": "jest",
     "lint:workflows": "node scripts/validate-workflows.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "smoke": "node scripts/smoke.js"
   },
   "devDependencies": {
     "husky": "^9.0.11",
