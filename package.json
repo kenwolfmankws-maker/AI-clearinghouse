@@ -4,6 +4,9 @@
   "description": "A collaborative space for AI integration and testing.",
   "main": "index.js",
   "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node index.js",
     "web": "node server.js",

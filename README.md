@@ -13,6 +13,18 @@ Minimal Node.js workspace with an OpenAI chat runner and a GitHub Actions workfl
   - `OPENAI_API_KEY=sk-your-key-here`
 - Do not commit `.env` (already ignored).
 
+### Deployment (Vercel)
+
+This repo is configured for Vercel's default serverless routing:
+- API: `api/chat.js` → available at `/api/chat`
+- Static UI: `index.html` at repo root (for production) and legacy `public/index.html` for the local Express server
+
+To deploy:
+1. Push to `main`.
+2. In Vercel → Project → Settings → Environment Variables, add `OPENAI_API_KEY` with your real key.
+3. Redeploy and visit your project URL; send a message from the UI to exercise `/api/chat`.
+
+
 ## Scripts
 
 - `npm start` — run `index.js`
