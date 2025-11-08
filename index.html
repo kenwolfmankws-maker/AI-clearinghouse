@@ -4,6 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Clearinghouse Chat</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <style>
+      /* Window controls overlay padding */
+      :root {
+        --titlebar-area-height: 40px;
+      }
+      body.has-overlay-titlebar header { padding-left: calc(env(titlebar-area-x, 0px) + 12px); padding-top: 8px; height: var(--titlebar-area-height); }
+  body.has-overlay-titlebar .wc-region { position: absolute; top: 0; left: env(titlebar-area-x, 0px); width: env(titlebar-area-width, 100%); height: env(titlebar-area-height, var(--titlebar-area-height)); -webkit-app-region: drag; }
+      body.has-overlay-titlebar .wc-region .handle { width: 100%; height: 100%; }
+    </style>
     <style>
       :root { color-scheme: light dark; }
       body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 0; display: grid; place-items: center; min-height: 100vh; background: #0b1020; color: #e6e6e6; }
@@ -27,6 +41,7 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7l3-7z" fill="#4c6fff"/></svg>
         <h1>AI Clearinghouse</h1>
       </header>
+      <div class="wc-region" aria-hidden="true"><div class="handle"></div></div>
       <div id="log" aria-live="polite"></div>
       <form id="chat">
         <div style="flex:1;display:flex;flex-direction:column;">
@@ -38,6 +53,17 @@
     </div>
 
     <script>
+      // Detect window-controls-overlay availability
+      if (navigator.windowControlsOverlay) {
+        document.body.classList.add('has-overlay-titlebar');
+        navigator.windowControlsOverlay.addEventListener('geometrychange', () => {
+          // Could adjust layout dynamically; we rely on env() CSS vars already.
+        });
+      }
+      // Register service worker for PWA install (basic offline shell)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(console.error);
+      }
       const log = document.getElementById('log');
       const form = document.getElementById('chat');
       const input = document.getElementById('input');

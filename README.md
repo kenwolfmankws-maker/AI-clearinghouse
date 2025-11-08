@@ -19,10 +19,25 @@ This repo is configured for Vercel's default serverless routing:
 - API: `api/chat.js` → available at `/api/chat`
 - Static UI: `index.html` at repo root (for production) and legacy `public/index.html` for the local Express server
 
-To deploy:
+To deploy (direct OpenAI):
 1. Push to `main`.
-2. In Vercel → Project → Settings → Environment Variables, add `OPENAI_API_KEY` with your real key.
-3. Redeploy and visit your project URL; send a message from the UI to exercise `/api/chat`.
+2. In Vercel → Project → Settings → Environment Variables, add `OPENAI_API_KEY` with your real key (Sensitive; Production + Preview).
+3. Redeploy.
+4. Visit your project URL and test `/api/chat`.
+
+To deploy (AI Gateway optional):
+1. Obtain an AI Gateway API key from Vercel.
+2. Add `AI_GATEWAY_API_KEY` (Sensitive; Production + Preview) instead of or alongside `OPENAI_API_KEY`.
+3. (Optional) Set `CHAT_MODEL` (e.g. `openai/gpt-4o-mini`, `anthropic/claude-sonnet-4`).
+4. Redeploy and test.
+
+Runtime selection:
+- If `AI_GATEWAY_API_KEY` is present the serverless function uses baseURL `https://ai-gateway.vercel.sh/v1` and provider-prefixed model names.
+- Otherwise it falls back to OpenAI with `OPENAI_API_KEY`.
+
+OIDC enforcement (optional):
+- Set `REQUIRE_OIDC_FOR_CHAT=true` to require a valid Vercel OIDC Bearer token for `/api/chat`.
+- `/api/protected` always requires a token and returns decoded claims if valid.
 
 
 ## Scripts
@@ -112,6 +127,27 @@ Notes:
 ## Troubleshooting
 
 - If `npm run verify` fails, ensure `.env` exists and contains a valid key
+- If gateway mode errors, confirm model is prefixed (e.g. `openai/gpt-4o-mini`) and key set as `AI_GATEWAY_API_KEY`
+
+### Protecting your own API with Vercel OIDC
+
+This repo includes `/api/protected` which validates Vercel-issued OIDC JWTs:
+
+Env vars:
+- `VERCEL_TEAM_SLUG` — your team slug (used for team issuer)
+- `OIDC_AUDIENCE` — the expected audience for your API
+- `OIDC_SUBJECT` (optional) — require a specific subject
+
+Verification rules:
+- Issuer: `https://oidc.vercel.com/<TEAM_SLUG>` if provided, else global `https://oidc.vercel.com`
+- JWKS: `https://oidc.vercel.com/<TEAM_SLUG>/.well-known/jwks` or global JWKS
+- Algorithm: RS256 only; small clock tolerance applied
+
+Call example (after obtaining a Vercel OIDC token in your environment):
+
+```bash
+curl -H "Authorization: Bearer <token>" https://<your-app>.vercel.app/api/protected
+```
 - If pushes from the workflow fail, check branch protections for `main`
 - If JSONL parsing fails, check for manual edits; each line should be valid JSON
 
