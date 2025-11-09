@@ -81,12 +81,52 @@ module.exports = async function handler(req, res) {
       messages: [{ role: 'user', content: message }],
       temperature: 0.7,
     });
+    const choice = completion.choices?.[0] || {};
+    const raw = choice?.message?.content ?? '';
+    const reply = typeof raw === 'string' ? raw.trim() : '';
+    const usage = completion.usage || {};
+    const truncated = Boolean(choice?.finish_reason && choice.finish_reason !== 'stop');
 
-    const reply = completion.choices?.[0]?.message?.content || '';
-    console.log('[chat] completion success, chars=' + reply.length);
-    return res.status(200).json({ reply });
+    if (!reply) {
+      console.warn('[chat] empty reply from model', {
+        finish_reason: choice?.finish_reason,
+        usage,
+      });
+    }
+
+    console.log('[chat] completion success', {
+      id: completion.id,
+      chars: reply.length,
+      prompt_tokens: usage.prompt_tokens || 0,
+      completion_tokens: usage.completion_tokens || 0,
+      total_tokens: usage.total_tokens || ((usage.prompt_tokens || 0) + (usage.completion_tokens || 0)),
+    });
+    return res.status(200).json({
+      reply,
+      model: mode.model,
+      mode: mode.kind,
+      id: completion.id,
+      tokens: {
+        prompt: usage.prompt_tokens || 0,
+        completion: usage.completion_tokens || 0,
+        total: usage.total_tokens || ((usage.prompt_tokens || 0) + (usage.completion_tokens || 0)),
+      },
+      truncated,
+    });
   } catch (err) {
-    console.error('[chat] API error:', err?.response?.data || err?.message || err);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    const status = err?.status || err?.response?.status || 500;
+    const provider = err?.response?.data || null;
+    console.error('[chat] API error', {
+      status,
+      message: err?.message,
+      provider,
+    });
+    const retryable = [408, 429, 500, 502, 503, 504].includes(status);
+    return res.status(status).json({
+      error: retryable ? 'Upstream temporarily unavailable' : 'Internal Server Error',
+      code: status,
+      detail: (provider && (provider.error?.message || provider.message)) || err?.message,
+      retryable,
+    });
   }
 };

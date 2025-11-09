@@ -1,4 +1,4 @@
-name: Deploy to Vercel (prebuilt)
+name: Deploy to Vercel (Prebuilt)
 
 on:
   push:
@@ -23,11 +23,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: npm
+          node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
       # Pull project & env config so vercel knows org/project and env context
       - name: Vercel Pull (production)
@@ -35,8 +35,8 @@ jobs:
 
       # Build locally in the GitHub runner. This bypasses Vercel's build queue.
       - name: Vercel Build (local)
-        run: npx vercel build --prod --token "$VERCEL_TOKEN"
+        run: npx vercel build --prod --token "$VERCEL_TOKEN" --yes
 
       # Upload the prebuilt output to Vercel without building on Vercel
       - name: Vercel Deploy (prebuilt, production)
-        run: npx vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN"
+        run: npx vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN" --yes
