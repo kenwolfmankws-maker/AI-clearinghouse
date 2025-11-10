@@ -1,3 +1,4 @@
+name: Publish Workspace Entry
 on:
   workflow_dispatch:
     inputs:
@@ -7,48 +8,34 @@ on:
       author:
         description: "Creator name"
         default: "Ken Wolfman Smalley"
-
-# Explicit permission so the workflow can push commits
 permissions:
   contents: write
-
-# Avoid overlapping writes to the same log file
 concurrency:
   group: workspace-log
   cancel-in-progress: false
-
 jobs:
   publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Configure Git identity
         run: |
           git config user.name "${{ github.event.inputs.author }}"
           git config user.email "kenwolfmankws-maker@users.noreply.github.com"
-
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
       - name: Append workspace log entry
         run: |
           mkdir -p workspace
-          # Plain text aggregate log
           printf "%s — %s\n" "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" "${{ github.event.inputs.entry }}" >> workspace/log.txt
-
-          # Date-based rotation log (one file per day)
           mkdir -p workspace/logs
           printf "%s — %s\n" "$(date -u '+%Y-%m-%d %H:%M:%S UTC')" "${{ github.event.inputs.entry }}" >> "workspace/logs/$(date -u '+%Y-%m-%d').log"
-
-          # JSONL structured log for programmatic parsing
           LOG_JSON=$(jq -n --arg ts "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" --arg author "${{ github.event.inputs.author }}" --arg entry "${{ github.event.inputs.entry }}" '{timestamp:$ts,author:$author,entry:$entry}')
           echo "$LOG_JSON" >> workspace/log.jsonl
-
-          echo "Last 5 lines of aggregate log:";
-          tail -n 5 workspace/log.txt
-
+          echo "Last 5 lines of aggregate log:"; tail -n 5 workspace/log.txt
       - name: Commit if there are changes
         run: |
           if git diff --quiet; then
@@ -58,9 +45,3 @@ jobs:
           git add workspace/log.txt workspace/logs workspace/log.jsonl
           git commit -m "Workspace entry: ${{ github.event.inputs.entry }}"
           git push
-
-      # - name: Upload log artifact (optional)
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: workspace-log
-      #     path: workspace/log.txt

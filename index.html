@@ -1,316 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Clearinghouse - Chat</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Clearinghouse Chat</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 800px;
-            height: 600px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message {
-            display: flex;
-            gap: 10px;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message.user {
-            justify-content: flex-end;
-        }
-
-        .message-content {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            line-height: 1.5;
-        }
-
-        .message.user .message-content {
-            background: #667eea;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.assistant .message-content {
-            background: #f1f3f5;
-            color: #212529;
-            border-bottom-left-radius: 4px;
-        }
-
-        .input-area {
-            padding: 20px;
-            border-top: 1px solid #e9ecef;
-            background: #f8f9fa;
-        }
-
-        .input-form {
-            display: flex;
-            gap: 10px;
-        }
-
-        #messageInput {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #dee2e6;
-            border-radius: 25px;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        #messageInput:focus {
-            border-color: #667eea;
-        }
-
-        #sendButton {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        #sendButton:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        #sendButton:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .typing-indicator {
-            display: none;
-            align-items: center;
-            gap: 5px;
-            padding: 12px 16px;
-            background: #f1f3f5;
-            border-radius: 18px;
-            width: fit-content;
-        }
-
-        .typing-indicator.active {
-            display: flex;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #adb5bd;
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
-        }
-
-        .error {
-            color: #dc3545;
-            padding: 10px;
-            text-align: center;
-            font-size: 14px;
-        }
+      /* Window controls overlay padding */
+      :root {
+        --titlebar-area-height: 40px;
+      }
+      body.has-overlay-titlebar header { padding-left: calc(env(titlebar-area-x, 0px) + 12px); padding-top: 8px; height: var(--titlebar-area-height); }
+  body.has-overlay-titlebar .wc-region { position: absolute; top: 0; left: env(titlebar-area-x, 0px); width: env(titlebar-area-width, 100%); height: env(titlebar-area-height, var(--titlebar-area-height)); -webkit-app-region: drag; }
+      body.has-overlay-titlebar .wc-region .handle { width: 100%; height: 100%; }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🤖 AI Clearinghouse</h1>
-            <p>Chat with AI powered by OpenAI</p>
+    <style>
+      :root { color-scheme: light dark; }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 0; display: grid; place-items: center; min-height: 100vh; background: #0b1020; color: #e6e6e6; }
+      .card { width: min(900px, 92vw); background: #11162b; border: 1px solid #273057; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+      header { padding: 16px 20px; border-bottom: 1px solid #273057; display: flex; align-items: center; gap: 12px; }
+      header h1 { font-size: 18px; margin: 0; }
+      #log { height: 52vh; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+      .msg { padding: 10px 12px; border-radius: 10px; max-width: 80%; white-space: pre-wrap; line-height: 1.4; }
+      .user { background: #233162; align-self: flex-end; }
+      .bot { background: #1a2346; align-self: flex-start; }
+      form { display: flex; gap: 10px; padding: 14px; border-top: 1px solid #273057; background: #0f1530; }
+      input[type="text"] { flex: 1; padding: 12px 14px; border-radius: 10px; border: 1px solid #2c3870; background: #0b1028; color: #e6e6e6; }
+      button { padding: 12px 16px; border-radius: 10px; border: none; background: #4c6fff; color: white; font-weight: 600; }
+      button:disabled { opacity: 0.65; }
+      small.hint { display: block; opacity: 0.75; margin-left: 4px; margin-bottom: 6px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <header>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7l3-7z" fill="#4c6fff"/></svg>
+        <h1>AI Clearinghouse</h1>
+      </header>
+      <div class="wc-region" aria-hidden="true"><div class="handle"></div></div>
+      <div id="log" aria-live="polite"></div>
+      <form id="chat">
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <small class="hint">Ask something and press Enter</small>
+          <input id="input" type="text" placeholder="Type your message..." autocomplete="off" required />
         </div>
-
-        <div class="chat-messages" id="chatMessages">
-            <div class="message assistant">
-                <div class="message-content">
-                    👋 Hello! I'm your AI assistant. How can I help you today?
-                </div>
-            </div>
-        </div>
-
-        <div class="input-area">
-            <form class="input-form" id="chatForm">
-                <input 
-                    type="text" 
-                    id="messageInput" 
-                    placeholder="Type your message..." 
-                    autocomplete="off"
-                    required
-                />
-                <button type="submit" id="sendButton">Send</button>
-            </form>
-            <div class="error" id="errorMessage"></div>
-        </div>
+        <button id="send" type="submit">Send</button>
+      </form>
     </div>
 
     <script>
-        const chatForm = document.getElementById('chatForm');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const chatMessages = document.getElementById('chatMessages');
-        const errorMessage = document.getElementById('errorMessage');
-
-        let typingIndicator = null;
-
-        function addMessage(content, role) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role}`;
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            contentDiv.textContent = content;
-            
-            messageDiv.appendChild(contentDiv);
-            chatMessages.appendChild(messageDiv);
-            
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function showTypingIndicator() {
-            typingIndicator = document.createElement('div');
-            typingIndicator.className = 'message assistant';
-            typingIndicator.innerHTML = `
-                <div class="typing-indicator active">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                </div>
-            `;
-            chatMessages.appendChild(typingIndicator);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function hideTypingIndicator() {
-            if (typingIndicator) {
-                typingIndicator.remove();
-                typingIndicator = null;
-            }
-        }
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            setTimeout(() => {
-                errorMessage.textContent = '';
-            }, 5000);
-        }
-
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const message = messageInput.value.trim();
-            if (!message) return;
-
-            // Add user message
-            addMessage(message, 'user');
-            messageInput.value = '';
-            
-            // Disable input
-            messageInput.disabled = true;
-            sendButton.disabled = true;
-            showTypingIndicator();
-
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ message })
-                });
-
-                hideTypingIndicator();
-
-                if (!response.ok) {
-                    throw new Error('Failed to get response');
-                }
-
-                const data = await response.json();
-                addMessage(data.reply, 'assistant');
-
-            } catch (error) {
-                hideTypingIndicator();
-                showError('Sorry, something went wrong. Please try again.');
-                console.error('Error:', error);
-            } finally {
-                messageInput.disabled = false;
-                sendButton.disabled = false;
-                messageInput.focus();
-            }
+      // Detect window-controls-overlay availability
+      if (navigator.windowControlsOverlay) {
+        document.body.classList.add('has-overlay-titlebar');
+        navigator.windowControlsOverlay.addEventListener('geometrychange', () => {
+          // Could adjust layout dynamically; we rely on env() CSS vars already.
         });
+      }
+      // Register service worker for PWA install (basic offline shell)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(console.error);
+      }
+      const log = document.getElementById('log');
+      const form = document.getElementById('chat');
+      const input = document.getElementById('input');
+      const sendBtn = document.getElementById('send');
 
-        // Focus input on load
-        messageInput.focus();
+      function addMsg(text, who) {
+        const div = document.createElement('div');
+        div.className = `msg ${who}`;
+        div.textContent = text;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+        addMsg(text, 'user');
+        input.value = '';
+        sendBtn.disabled = true;
+        try {
+          const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data?.error || 'Request failed');
+          addMsg(data.reply || '(no reply)', 'bot');
+        } catch (err) {
+          addMsg('Error: ' + (err?.message || err), 'bot');
+        } finally {
+          sendBtn.disabled = false;
+          input.focus();
+        }
+      });
     </script>
-</body>
-</html>
+  </body>
+  </html>
