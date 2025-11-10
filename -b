@@ -1,0 +1,254 @@
+[33mcommit 8344f3bac6167ee7a77dea322c985a7904470b8b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sun Nov 9 18:52:31 2025 -0700
+
+    Remove env files from repo
+
+[33mcommit f54551e8897b83ffa8925e48b5f30fcfc088e3fa[m
+Merge: fc9a530 73f6e5c
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sun Nov 9 18:33:43 2025 -0700
+
+    Merge branch 'main' of https://github.com/kenwolfmankws-maker/AI-clearinghouse
+
+[33mcommit fc9a5307fdc1cf2f878bbd796e121e9049e4eda8[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sun Nov 9 18:25:25 2025 -0700
+
+    Create .env
+
+[33mcommit 6f73cf7f719039ab6651833198e98104247a37f2[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sun Nov 9 18:15:43 2025 -0700
+
+    Ignore secret files
+
+[33mcommit 73f6e5c6711f6b8155d143750ea03e451a78fd1d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sun Nov 9 10:04:10 2025 -0700
+
+    chore: remove all tracked node_modules artifacts from index and disk, finalize repo clean
+
+[33mcommit cddcc54626bf1c1b38fba455754449ff41c6e872[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 14:59:52 2025 -0700
+
+    chore(husky): remove deprecated wrapper lines; add smoke test script
+
+[33mcommit 08fccfd92432daa6658fbe6618855e83570b1e65[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 14:55:22 2025 -0700
+
+    chore: trigger redeploy: add proxy endpoint and OIDC features
+
+[33mcommit a556bbe48d60779a4d1fce505594ff66407917a8[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 13:41:00 2025 -0700
+
+    chore(vercel): rename server.js to local-server.js and point web script to it to prevent Express auto-detect
+
+[33mcommit e28f0c551b7087907c4fa68bfd427b38b649240a[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 13:08:15 2025 -0700
+
+    Add logging and error handling to chat API
+    
+    Enhanced the chat API with detailed logging for OpenAI SDK import, API key presence, and completion creation. Improved error handling for SDK import failures and missing API key to aid debugging and reliability.
+
+[33mcommit 5346aefc556030d27df030c3b9e89764a2c6e54e[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 12:35:12 2025 -0700
+
+    fix(api): use dynamic import for openai to avoid FUNCTION_INVOCATION_FAILED on Vercel
+
+[33mcommit ac123ef853043c1eb4b0fd131dcd01ac41bffc44[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 12:27:49 2025 -0700
+
+    chore(security): add Husky pre-commit guard to block secrets and heavy artifacts
+
+[33mcommit 75e4b03f23e82c7571a10e815ebb15f0bf446666[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 11:57:11 2025 -0700
+
+    docs(setup): add Node >=18 engines and deployment/env instructions
+
+[33mcommit 5a7b2e05b87c0db02d77ed04e3986628e1056e2a[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 11:46:50 2025 -0700
+
+    chore(vercel): remove legacy vercel.json to enable default api routing
+
+[33mcommit 5d89bd72f02b82e022158f4171e8839f4e4f960d[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 11:46:18 2025 -0700
+
+    chore(security): sanitize .env.example replace real OPENAI_API_KEY with placeholder
+
+[33mcommit b308864286d692da033148da603ecdbb7baa3658[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 11:36:51 2025 -0700
+
+    feat(web): add Vercel serverless API (api/chat.js) and static UI (index.html)
+
+[33mcommit 4a2fc279e3e8445bb5b90b32959fd84971b218bf[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 11:20:13 2025 -0700
+
+    fix(vercel): remove legacy server.js routing; add serverless api/chat.js and static index.html
+
+[33mcommit a9dacc00ff992b70ba2f97fddda4ca11d97d718d[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 10:55:15 2025 -0700
+
+    fix: convert to Vercel serverless functions
+
+[33mcommit 09fb7d707d64fcb069f620e7f10ea1bb5bf79e37[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Sat Nov 8 10:19:00 2025 -0700
+
+    feat: add web interface with Express server and chat UI
+
+[33mcommit 42ed40bb49c3592dbb265f64b705318d1b6bada5[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 16:20:23 2025 -0700
+
+    chore(husky): remove problematic pre-commit hook; retain manual validator
+
+[33mcommit 45660009d4214d46a7b854289fb0ca0e61fed5f9[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 16:18:43 2025 -0700
+
+    chore(husky): replace bash hook with Node script for Windows compatibility
+
+[33mcommit b1ee66a8aea504057dfbea962562ecd9e008edc2[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 16:17:40 2025 -0700
+
+    chore(husky): change pre-commit shebang to bash for Windows Git compatibility
+
+[33mcommit 6775abeeed5d965d294a64d4b249cab7f9f8722b[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 16:14:45 2025 -0700
+
+    chore(husky): enforce LF for hooks with .gitattributes; fix pre-commit to run npm lint
+
+[33mcommit ddbcd66803a3b134f470a9761fa74eddee1fe3b9[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 15:56:51 2025 -0700
+
+    chore(ci): add workflow validator and npm script (lint:workflows)
+
+[33mcommit 576b88d593d492e657e2ac815930efbc242de591[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 15:33:45 2025 -0700
+
+    chore(secrets): remove tracked .env from repo; use .env.example only
+
+[33mcommit 8f50fcfcbc7859bcb02654d32193e92e108fcfeb[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 15:26:45 2025 -0700
+
+    feat(search): highlight matches and add --format=json; add Jest tests and seed sample logs
+
+[33mcommit 660870f7b8ee4260ec7edf521a2698cea6c889e2[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 15:15:32 2025 -0700
+
+    feat(search): add local CLI for log search and npm script; update README with usage
+
+[33mcommit 17b64d055ee3e2489b2bc7c4927eee73e6681c86[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 15:10:39 2025 -0700
+
+    Add search workflow for logs (text + JSONL) with summary + artifact; document usage
+
+[33mcommit dd629a4fb448909a602edacda4e89e2d72255c2d[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 15:05:31 2025 -0700
+
+    Workflow logs: add daily rotation and JSONL with jq; update README
+
+[33mcommit 9490a429b3f73b400d9f23480d3e492c15e570e7[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 15:03:09 2025 -0700
+
+    Workflow: add write perms, concurrency, safe commit guard; add README usage
+
+[33mcommit b0a3a8166c6c74cecf4b8cbde43f5815ddf07b81[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 14:57:09 2025 -0700
+
+    Remove trailing whitespace from workflow file
+
+[33mcommit 934f6b3296b31958c4af60ec7af1f2b4451654cc[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 14:53:39 2025 -0700
+
+    Clean up workflow file formatting
+
+[33mcommit 4c9aed27693c6b8ef834573c39a4cc7f3ef73271[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 14:50:47 2025 -0700
+
+    Fix corrupted workflow file and update copilot instructions
+
+[33mcommit 2cb6ca39e357625e31a547d71c8aab8e1a2dc81f[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 14:39:05 2025 -0700
+
+    Remove node_modules and package-lock.json from tracking
+    
+    These should never be committed - they're auto-generated files.
+
+[33mcommit 68d30a9cb53d9c70ca420b4b4ffc972614661119[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 14:36:28 2025 -0700
+
+    Add OpenAI chat runner with env-based key management
+    
+    - Created index.js and GeorgePortal/chat.js for OpenAI chat
+    - Added scripts/verify-key.js to validate API key
+    - Configured dotenv for secure key loading from .env
+    - Updated .gitignore to prevent committing secrets
+    - Added .env.example template for setup
+
+[33mcommit 6d1725183e35d31817edcee983622b8aa4dce7a5[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Fri Nov 7 12:07:13 2025 -0700
+
+    Update .env
+
+[33mcommit 05f057620585049dbbeeec46ce1b37187e4b026d[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Thu Nov 6 20:25:03 2025 -0700
+
+    Add index.js runner and update project metadata
+    
+    Introduces index.js as the main entry point, providing an OpenAI connection check and environment readiness validation. Updates package.json to set 'main' to index.js, adds start/test scripts, and aligns dependency version. Cleans up copilot-instructions.md and modifies CI workflow to support new entry point.
+
+[33mcommit 6faef2b3c4db5d74742dc5c5cfbcdaefad84d16e[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Thu Nov 6 12:39:57 2025 -0700
+
+    Add OpenAI SDK and update .gitignore
+    
+    Added the OpenAI SDK and its dependencies to node_modules, including binaries and vendor libraries. Updated .gitignore to exclude new files as needed.
+
+[33mcommit 3f4ef421d495191cc4989a90274f992a36962448[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Wed Nov 5 18:30:28 2025 -0700
+
+    Add Copilot instructions
+
+[33mcommit f08d9c4ee1d8586028ed7beea8c6364d92f81c41[m
+Author: kenwolfmankws-maker <ken@yourdomain.com>
+Date:   Wed Nov 5 16:23:28 2025 -0700
+
+    Add workflow: Publish Workspace Entry
+
+[33mcommit 2bd2ed30208443b7efb310ece28bf1a92eeb6587[m
+Author: kenwolfmankws-maker <kenwolfman.kws@gmail.com>
+Date:   Wed Nov 5 16:08:30 2025 -0700
+
+    Initial commit: setup Node environment and workspace workflow
