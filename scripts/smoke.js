@@ -38,6 +38,7 @@ function withTimeout(promise, ms, label) {
   };
 }
 
+
 async function testChat() {
   const url = new URL('/api/chat', BASE_URL).toString();
   const w = withTimeout(async (ctrl) => {
