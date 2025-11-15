@@ -1,7 +1,3 @@
-// api/chat.js
-// Simple Vercel Serverless Function for chatbot backend
-
-const OpenAI = require("openai");
 
 module.exports = async function handler(req, res) {
   // CORS
