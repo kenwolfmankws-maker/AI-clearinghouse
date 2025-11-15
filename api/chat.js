@@ -1,4 +1,59 @@
-// Vercel Serverless Function: POST /api/chat
+// Vercel Serverless Function: POST /api/chat// api/chat.js
+// Vercel serverless function for chatbot backend
+
+const OpenAI = require("openai");
+
+module.exports = async function handler(req, res) {
+  // Allow CORS for browser requests
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Respond to preflight
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  // Only POST allowed
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
+  try {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
+        error: "Server misconfigured: missing OPENAI_API_KEY"
+      });
+    }
+
+    const { message } = req.body || {};
+    if (!message || typeof message !== "string") {
+      return res.status(400).json({ error: 'Missing "message" in body' });
+    }
+
+    const client = new OpenAI({ apiKey });
+
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: message }],
+      max_tokens: 500
+    });
+
+    const reply =
+      completion?.choices?.[0]?.message?.content ||
+      "Sorry, I couldn't generate a reply.";
+
+    return res.status(200).json({ reply });
+  } catch (err) {
+    console.error("Chat API error:", err);
+    return res.status(500).json({
+      error: "Internal server error"
+    });
+  }
+};
+
 // Expects JSON: { message: string }
 // Returns JSON: { reply: string }
 // Updated: 2025-11-08 (AI Gateway optional integration)
