@@ -31,11 +31,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing "message" in request body' });
     }
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: message }],
-      max_tokens: 200
-    });
+   const completion = await client.responses.create({
+  model: "gpt-4o-mini",
+  input: message
+});
+
+const reply = completion.output_text || "I couldn't generate a reply.";
+
 
     const reply =
       completion?.choices?.[0]?.message?.content ||
