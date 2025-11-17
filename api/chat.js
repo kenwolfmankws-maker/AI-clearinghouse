@@ -1,100 +1,59 @@
-import OpenAI from "openai";
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+import { useState } from "react";
+import ErrorBanner from "./ErrorBanner";
 
-export default async function handler(req, res) {
-  // CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+export default function Chat() {
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [input, setInput] = useState("");
 
-  // Preflight
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
+  async function sendMessage(e) {
+    e.preventDefault(); // prevent page reload
+    if (!input.trim()) return;
 
-  // POST only
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
+    setLoading(true);
+    setError(null);
+    setMessages([...messages, { role: "user", content: input }]);
 
-  try {
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
+      const data = await res.json();
+
+      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+      setInput(""); // clear input box
     }
-
-    const { message } = req.body || {};
-    if (!message || typeof message !== "string") {
-      return res.status(400).json({ error: 'Missing "message" in request body' });
-    }
-
-   const completion = await client.responses.create({
-  model: "gpt-4o-mini",
-  input: message
-});
-
-const reply = completion.output_text || "I couldn't generate a reply.";
-
-
-    const reply =
-      completion?.choices?.[0]?.message?.content ||
-      "I couldn't generate a reply.";
-
-    return res.status(200).json({ reply });
-
-  } catch (err) {
-    console.error("Chat API error:", err);
-    return res
-      .status(500)
-      .json({ error: "Internal server error", details: err.message });
-  }
-}
-  // CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  // Preflight
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
   }
 
-  // POST only
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
+  return (
+    <div>
+      <ErrorBanner error={error} />
 
-  try {
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
-    }
+      <div className="chat-window">
+        {messages.map((m, i) => (
+          <div key={i} className={m.role}>
+            <strong>{m.role}:</strong> {m.content}
+          </div>
+        ))}
+        {loading && <div className="typing-indicator">Bot is typing...</div>}
+      </div>
 
-    const { message } = req.body || {};
-    if (!message || typeof message !== "string") {
-      return res.status(400).json({ error: 'Missing "message" in request body' });
-    }
-
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: message }],
-      max_tokens: 200
-    });
-
-    const reply =
-      completion?.choices?.[0]?.message?.content ||
-      "I couldn't generate a reply.";
-
-    return res.status(200).json({ reply });
-
-  } catch (err) {
-    console.error("Chat API error:", err);
-    return res
-      .status(500)
-      .json({ error: "Internal server error", details: err.message });
-  }
+      <form onSubmit={sendMessage} className="chat-form">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message..."
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  );
 }
