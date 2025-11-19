@@ -13,7 +13,7 @@ function getStagedFiles() {
   try {
     const out = execSync('git diff --cached --name-only -z', { encoding: 'utf8' });
     return out ? out.split('\u0000').filter(Boolean) : [];
-  } catch (e) {
+  } catch {
     return [];
   }
 }
@@ -21,7 +21,7 @@ function getStagedFiles() {
 function getStagedPatch() {
   try {
     return execSync('git diff --cached -U0', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
-  } catch (e) {
+  } catch {
     return '';
   }
 }
