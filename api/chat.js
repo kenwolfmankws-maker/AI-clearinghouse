@@ -1,42 +1,60 @@
-// File: pages/api/chat.js
+// api/chat.js — Clean Vercel Serverless Function (ESM)
 
 import OpenAI from "openai";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export default function Chat() {
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [input, setInput] = useState("");
 
-export default async function handler(req, res) {
-  // CORS headers (optional)
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  async function sendMessage(e) {
+    e.preventDefault(); // prevent page reload
+    if (!input.trim()) return;
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end(); // Handle preflight
-  }
+    setLoading(true);
+    setError(null);
+    setMessages([...messages, { role: "user", content: input }]);
 
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
+      const data = await res.json();
 
-  try {
-    const { message } = req.body;
-    if (!message || typeof message !== "string") {
-      return res.status(400).json({ error: 'Missing or invalid "message" in request body' });
+      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+      setInput(""); // clear input box
     }
-
-    const completion = await client.chat.completions.create({
-      model: "gpt-4", // or "gpt-3.5-turbo"
-      messages: [{ role: "user", content: message }],
-    });
-
-    const reply = completion.choices[0].message.content;
-    return res.status(200).json({ reply });
-  } catch (error) {
-    console.error("Chat API error:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
   }
-}
 
+  return (
+    <div>
+      <ErrorBanner error={error} />
+
+      <div className="chat-window">
+        {messages.map((m, i) => (
+          <div key={i} className={m.role}>
+            <strong>{m.role}:</strong> {m.content}
+          </div>
+        ))}
+        {loading && <div className="typing-indicator">Bot is typing...</div>}
+      </div>
+
+      <form onSubmit={sendMessage} className="chat-form">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message..."
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  );
+}
