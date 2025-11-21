@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A collaborative space for AI integration and testing.",
   "main": "index.js",
-  "type": "commonjs",
+  "type": "module",
   "engines": {
     "node": ">=20 <21"
   },
@@ -32,7 +32,7 @@
     "@vercel/functions": "^3.3.0",
     "@vercel/oidc": "^3.0.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "jose": "^5.9.3",
     "ollama": "^0.6.2",
