@@ -2,59 +2,38 @@
 
 import OpenAI from "openai";
 
-export default function Chat() {
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [input, setInput] = useState("");
-
-  async function sendMessage(e) {
-    e.preventDefault(); // prevent page reload
-    if (!input.trim()) return;
-
-    setLoading(true);
-    setError(null);
-    setMessages([...messages, { role: "user", content: input }]);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
-      });
-      const data = await res.json();
-
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-      setInput(""); // clear input box
+export default async function handler(req, res) {
+  try {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
     }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
+    }
+
+    const client = new OpenAI({ apiKey });
+
+    const { message } = req.body;
+    if (!message || typeof message !== "string") {
+      return res
+        .status(400)
+        .json({ error: "Missing or invalid 'message' field in request body" });
+    }
+
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: message }],
+    });
+
+    const reply = completion.choices[0]?.message?.content || "";
+
+    return res.status(200).json({ reply });
+  } catch (err) {
+    console.error("/api/chat error:", err);
+    return res.status(500).json({ error: err.message });
   }
-
-  return (
-    <div>
-      <ErrorBanner error={error} />
-
-      <div className="chat-window">
-        {messages.map((m, i) => (
-          <div key={i} className={m.role}>
-            <strong>{m.role}:</strong> {m.content}
-          </div>
-        ))}
-        {loading && <div className="typing-indicator">Bot is typing...</div>}
-      </div>
-
-      <form onSubmit={sendMessage} className="chat-form">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-        />
-        <button type="submit">Send</button>
-      </form>
-    </div>
-  );
 }
+
+
