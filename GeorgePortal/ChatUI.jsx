@@ -1,6 +1,6 @@
 // GeorgePortal chat module using OpenAI v6 client and dotenv
 require('dotenv').config();
-const OpenAI = require('openai');
+const OpenAI = require('openai'); 
 
 function getClient() {
   const key = process.env.OPENAI_API_KEY;
