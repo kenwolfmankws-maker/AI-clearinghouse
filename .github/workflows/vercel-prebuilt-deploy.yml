@@ -33,9 +33,6 @@ jobs:
       - name: Vercel Pull (production)
         run: npx vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
 
-      # Build locally in the GitHub runner. This bypasses Vercel's build queue.
-      - name: Vercel Build (local)
-        run: npx vercel build --prod --token "$VERCEL_TOKEN" --yes
 
       # Upload the prebuilt output to Vercel without building on Vercel
       - name: Vercel Deploy (prebuilt, production)
