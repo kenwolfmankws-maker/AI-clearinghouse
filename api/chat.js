@@ -1,6 +1,3 @@
-// api/chat.js — Clean Vercel Serverless Function (ESM)
-
-
 import OpenAI from "openai";
 
 export default async function handler(req, res) {
@@ -15,16 +12,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing message" });
     }
 
-    const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+    const response = await client.responses.create({
+      model: "gpt-5-mini",
+      input: message,
     });
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: message }],
-    });
-
-    const reply = completion.choices[0].message.content;
+    const reply = response.output[0].content[0].text;
     return res.status(200).json({ reply });
 
   } catch (err) {
@@ -32,5 +27,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Server Error", detail: err.message });
   }
 }
-
-
