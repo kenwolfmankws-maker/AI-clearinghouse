@@ -2,24 +2,35 @@
 
 import OpenAI from "openai";
 
-export default async function handler(req, res) {
+export default async function handler(request) {
   try {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method not allowed" });
+    // Vercel functions use Web API Request object
+    if (request.method !== "POST") {
+      return new Response(
+        JSON.stringify({ error: "Method not allowed" }),
+        { status: 405, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
+      return new Response(
+        JSON.stringify({ error: "Missing OPENAI_API_KEY" }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const client = new OpenAI({ apiKey });
 
-    const { message } = req.body;
+    // Parse request body from Web API Request
+    const body = await request.json();
+    const { message } = body;
+    
     if (!message || typeof message !== "string") {
-      return res
-        .status(400)
-        .json({ error: "Missing or invalid 'message' field in request body" });
+      return new Response(
+        JSON.stringify({ error: "Missing or invalid 'message' field in request body" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const completion = await client.chat.completions.create({
@@ -29,10 +40,16 @@ export default async function handler(req, res) {
 
     const reply = completion.choices[0]?.message?.content || "";
 
-    return res.status(200).json({ reply });
+    return new Response(
+      JSON.stringify({ reply }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
   } catch (err) {
     console.error("/api/chat error:", err);
-    return res.status(500).json({ error: err.message });
+    return new Response(
+      JSON.stringify({ error: err.message }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
 
