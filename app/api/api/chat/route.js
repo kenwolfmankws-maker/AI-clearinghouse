@@ -1,8 +1,7 @@
-api/chat/route.js/import OpenAI from "openai";
+import OpenAI from "openai";
 
 export async function POST(req) {
   try {
-    // Validate API Key
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
       return new Response(
@@ -11,7 +10,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate request body
     let body;
     try {
       body = await req.json();
@@ -30,10 +28,8 @@ export async function POST(req) {
       );
     }
 
-    // OpenAI Client
     const client = new OpenAI({ apiKey });
 
-    // Send to OpenAI Completions API
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -49,8 +45,8 @@ export async function POST(req) {
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
 
-  } catch (err) {
-    console.error("Chat API Error:", err);
+  } catch (error) {
+    console.error("Chat API Error:", error);
 
     return new Response(
       JSON.stringify({ error: "Internal server error." }),
@@ -59,24 +55,72 @@ export async function POST(req) {
   }
 }
 
-// Reject all other HTTP methods
 export function GET() {
   return new Response(
     JSON.stringify({ error: "Method GET not allowed. Use POST." }),
     { status: 405, headers: { "Content-Type": "application/json" } }
   );
 }
+import OpenAI from "openai";
 
-export function PUT() {
-  return new Response(
-    JSON.stringify({ error: "Method PUT not allowed. Use POST." }),
-    { status: 405, headers: { "Content-Type": "application/json" } }
-  );
+export async function POST(req) {
+  try {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return new Response(
+        JSON.stringify({ error: "Missing OpenAI API Key." }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON." }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const { message } = body;
+    if (!message || typeof message !== "string") {
+      return new Response(
+        JSON.stringify({ error: "POST body must contain a 'message' string." }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const client = new OpenAI({ apiKey });
+
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "You are Eldon, Gatekeeper of the Clearinghouse." },
+        { role: "user", content: message }
+      ]
+    });
+
+    const reply = completion.choices?.[0]?.message?.content || "";
+
+    return new Response(
+      JSON.stringify({ reply }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+
+  } catch (error) {
+    console.error("Chat API Error:", error);
+
+    return new Response(
+      JSON.stringify({ error: "Internal server error." }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
 }
 
-export function DELETE() {
+export function GET() {
   return new Response(
-    JSON.stringify({ error: "Method DELETE not allowed. Use POST." }),
+    JSON.stringify({ error: "Method GET not allowed. Use POST." }),
     { status: 405, headers: { "Content-Type": "application/json" } }
   );
 }
