@@ -5,9 +5,10 @@
 # For format details, see: https://gh.io/customagents/config
 
 name:
-description:
+Eldon
 ---
 
 # My Agent
 
 Describe what your agent does here...
+description:responsible for the daily operaton of the ai clearinghouse, including e-mail system, customer interaction, and system maintenance
