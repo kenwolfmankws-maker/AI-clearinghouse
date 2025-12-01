@@ -1,4 +1,4 @@
-// eslint.config.js (Flat Config for ESLint v9+)
+// eslint.config.cjs (Flat Config for ESLint v9+, .cjs extension for ESM compatibility)
 const js = require('@eslint/js');
 
 module.exports = [
