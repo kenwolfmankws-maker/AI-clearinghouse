@@ -2,7 +2,7 @@
 /**
  * OIDC JWT verification CLI
  * Usage:
- *   node scripts/oidc-test.cjs <jwt>
+ *   node scripts/oidc-test.js <jwt>
  *   or set TOKEN env var: TOKEN=<jwt> npm run oidc:test
  *
  * Relies on lib/oidc.js verifyToken().
@@ -15,7 +15,7 @@ const fs = require('fs');
 async function main() {
   const token = process.argv[2] || process.env.TOKEN;
   if (!token) {
-    console.error('Usage: node scripts/oidc-test.cjs <jwt>\nOr set TOKEN env variable.');
+    console.error('Usage: node scripts/oidc-test.js <jwt>\nOr set TOKEN env variable.');
     process.exit(2);
   }
   let verifier;
