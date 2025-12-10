@@ -2,21 +2,21 @@
   "name": "ai-clearinghouse",
   "version": "1.0.0",
   "description": "A collaborative space for AI integration and testing.",
-  "main": "index.js",
+  "main": "index.cjs",
   "type": "module",
   "engines": {
     "node": ">=20 <21"
   },
   "scripts": {
-    "start": "node index.js",
-    "web": "node local-server.js",
-    "chat": "node GeorgePortal/chat.js",
-    "verify": "node scripts/verify-key.js",
-    "search": "node scripts/search-logs.js",
+    "start": "node index.cjs",
+    "web": "node local-server.cjs",
+    "chat": "node GeorgePortal/chat.cjs",
+    "verify": "node scripts/verify-key.cjs",
+    "search": "node scripts/search-logs.cjs",
     "test": "jest",
-    "lint:workflows": "node scripts/validate-workflows.js",
+    "lint:workflows": "node scripts/validate-workflows.cjs",
     "smoke": "node scripts/smoke.js",
-    "oidc:test": "node scripts/oidc-test.js",
+    "oidc:test": "node scripts/oidc-test.cjs",
     "clean": "rimraf node_modules",
   
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"

@@ -42,8 +42,8 @@ OIDC enforcement (optional):
 
 ## Scripts
 
-- `npm start` — run `index.js`
-- `npm run chat -- "hello"` — call `GeorgePortal/chat.js`
+- `npm start` — run `index.cjs`
+- `npm run chat -- "hello"` — call `GeorgePortal/chat.cjs`
 - `npm run verify` — quick key check against OpenAI models API
 - `npm run search -- "query" [-- --scope=all|text|jsonl --limit=200]` — local log search (see below)
 

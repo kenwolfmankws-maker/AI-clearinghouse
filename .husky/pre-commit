@@ -1,1 +1,1 @@
-node scripts/precommit-guard.js
+node scripts/precommit-guard.cjs
