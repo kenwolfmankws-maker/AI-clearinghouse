@@ -28,10 +28,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message })
             });
+const data = await res.json();
 
-            const data = await res.json();
-            addMessage("AI", data.reply || data.message || JSON.stringify(data));
+if (!data || typeof data !== "object") {
+  addMessage("AI", "Eldon squints at the horizon. No words came back.");
+  return;
+}
 
+addMessage(
+  "AI",
+  data.reply ?? data.message ?? data.text ?? JSON.stringify(data)
+);
+
+            
         } catch (err) {
             addMessage("System", "Error contacting server.");
         }
@@ -39,6 +48,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     sendBtn.addEventListener("click", sendMessage);
     input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") sendMessage();
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
     });
 });
