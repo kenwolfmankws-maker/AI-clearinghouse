@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("eldon-input");
     const sendBtn = document.getElementById("sendBtn");
 
-    function addMessage(sender, text) {
+    function addMessage(addMessage("AI", data.reply);
+) {
         const msg = document.createElement("div");
         msg.style.margin = "8px 0";
         msg.style.whiteSpace = "pre-wrap";
