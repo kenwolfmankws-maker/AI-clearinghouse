@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("eldon-input");
     const sendBtn = document.getElementById("sendBtn");
 
-    function addMessage(addMessage("AI", data.reply);
-) {
+    
+) {function addMessage(sender, text) {
         const msg = document.createElement("div");
         msg.style.margin = "8px 0";
         msg.style.whiteSpace = "pre-wrap";
@@ -30,7 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const data = await res.json();
-            addMessage("AI", data);
+            addMessage("AI", data.reply || data.message || JSON.stringify(data));
+
         } catch (err) {
             addMessage("System", "Error contacting server.");
         }
