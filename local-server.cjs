@@ -15,8 +15,8 @@ const openai = new OpenAI({
 // Middleware
 app.use(cors());
 app.use(express.json());
-// Serve static files from root directory (for porch subdirectory)
-app.use(express.static(__dirname));
+// Serve porch subdirectory
+app.use('/porch', express.static(path.join(__dirname, 'porch')));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
