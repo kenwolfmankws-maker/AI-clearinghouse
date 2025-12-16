@@ -15,7 +15,8 @@ const openai = new OpenAI({
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+// Serve static files from root directory (for porch subdirectory)
+app.use(express.static(__dirname));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -79,9 +80,9 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Serve index.html for root
+// Serve index.html for root (AI Clearinghouse)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {
