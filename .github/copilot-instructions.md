@@ -5,19 +5,23 @@
 This repository is a Node.js workspace for collaborative AI integration, logging, and Vercel serverless deployment. Use these project-specific guidelines for maximum agent productivity:
 
 ## Architecture & Major Components
-- **Chat API**: `/api/chat.js` (Vercel serverless, POST `/api/chat`) and `local-server.js` (Express for local dev, serves `public/index.html`).
-- **Protected API**: `/api/protected.js` validates Vercel OIDC JWTs for secure endpoints.
-- **Proxy API**: `/api/proxy.js` calls external APIs using Vercel OIDC tokens (dynamic ESM import pattern).
+- **Portal System**: Multi-experience architecture with distinct UIs:
+	- `index.html` (root `/`) – AI Clearinghouse Entry Portal (navigation hub)
+	- `porch/index.html` (`/porch`) – Wolfman's Cosmic Cowboy Porch (immersive chat)
+	- `public/index.html` (LEGACY local dev only)
+- **Chat API**: `/api/chat.js` (Vercel serverless, POST `/api/chat`) and `local-server.cjs` (Express for local dev, serves both portals).
+- **Routing**: `vercel.json` rewrites `/porch` → `/porch/index.html`; `local-server.cjs` serves `/porch` as static directory.
 - **Log System**: All workflow and chat events are recorded in three formats:
 	- `workspace/log.txt` (aggregate text)
 	- `workspace/logs/YYYY-MM-DD.log` (daily logs)
 	- `workspace/log.jsonl` (structured JSONL)
 - **OIDC Verification**: Shared logic in `lib/oidc.js` for JWT validation, used by both serverless and CLI scripts.
-- **UI**: `index.html` (production) and `public/index.html` (local dev) provide chat interfaces.
 
 ## Developer Workflows
 - **Local Development**:
-	- Start local server: `npm run web` (runs `local-server.js`)
+	- Start local server: `npm run web` (runs `local-server.cjs`)
+		- Root portal: `http://localhost:3000/`
+		- Porch portal: `http://localhost:3000/porch`
 	- Run chat CLI: `npm start` or `npm run chat -- "hello"`
 	- Verify OpenAI key: `npm run verify`
 	- Search logs: `npm run search -- "query" [-- --scope=all|text|jsonl --limit=200]`
@@ -54,7 +58,7 @@ This repository is a Node.js workspace for collaborative AI integration, logging
 - **OIDC-protected endpoint**: See `/api/protected.js` and `lib/oidc.js` for validation patterns.
 
 ## References
-Key files: `api/chat.js`, `api/protected.js`, `api/proxy.js`, `lib/oidc.js`, `local-server.js`, `scripts/search-logs.js`, `workspace/log.txt`, `workspace/log.jsonl`, `README.md`
+Key files: `api/chat.js`, `lib/oidc.js`, `local-server.cjs`, `scripts/search-logs.cjs`, `index.html`, `porch/index.html`, `ARCHITECTURE.md`, `README.md`
 For workflow details, see `.github/workflows/`
 
 ---

@@ -1,10 +1,17 @@
 # AI-clearinghouse
 
-Minimal Node.js workspace with an OpenAI chat runner and a GitHub Actions workflow that records entries in three formats:
+A collaborative space for AI integration, testing, and exploration featuring multiple portal experiences:
+
+- **🏠 AI Clearinghouse Entry Portal** (root `/`) – Gateway hub for AI experiences
+- **🌌 Wolfman's Cosmic Cowboy Porch** (`/porch`) – Immersive chat environment with cosmic theming
+
+This Node.js workspace includes OpenAI chat integration and a GitHub Actions workflow that records entries in three formats:
 
 - Aggregate text log: `workspace/log.txt`
 - Daily rotated logs: `workspace/logs/YYYY-MM-DD.log`
 - Structured JSONL stream: `workspace/log.jsonl` (one JSON object per line)
+
+> 📖 **Architecture Details:** See [ARCHITECTURE.md](ARCHITECTURE.md) for comprehensive documentation of portal structure, routing, and design decisions.
 
 ## Setup
 
@@ -16,8 +23,10 @@ Minimal Node.js workspace with an OpenAI chat runner and a GitHub Actions workfl
 ### Deployment (Vercel)
 
 This repo is configured for Vercel's default serverless routing:
-- API: `api/chat.js` → available at `/api/chat`
-- Static UI: `index.html` at repo root (for production) and legacy `public/index.html` for the local Express server
+- **API:** `api/chat.js` → available at `/api/chat`
+- **Root Portal:** `index.html` → AI Clearinghouse Entry at `/`
+- **Porch Portal:** `porch/index.html` → Cosmic Cowboy experience at `/porch`
+- **Routing:** `vercel.json` handles rewrites for multi-portal architecture
 
 To deploy (direct OpenAI):
 1. Push to `main`.

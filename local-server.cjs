@@ -88,4 +88,6 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📝 API endpoint: http://localhost:${PORT}/api/chat`);
+  console.log(`🏠 Clearinghouse Entry: http://localhost:${PORT}/`);
+  console.log(`🌌 Cosmic Cowboy Porch: http://localhost:${PORT}/porch`);
 });

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Clearinghouse</title>
+  <title>AI Clearinghouse – Entry Portal</title>
 
   <style>
     body {
@@ -14,14 +14,89 @@
       color: white;
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+    }
+
+    .clearinghouse-header {
+      max-width: 800px;
+      width: 90%;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .clearinghouse-header h1 {
+      font-size: 42px;
+      margin: 0 0 15px 0;
+      color: #3aaaff;
+      text-shadow: 0 0 15px rgba(58,170,255,0.7);
+      letter-spacing: 2px;
+    }
+
+    .clearinghouse-header p {
+      font-size: 16px;
+      opacity: 0.8;
+      margin: 0 0 30px 0;
+      line-height: 1.6;
+    }
+
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 900px;
+      width: 90%;
+      margin: 0 auto;
+    }
+
+    .portal-card {
+      background: rgba(10, 15, 31, 0.7);
+      border: 2px solid #3aaaff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(58,170,255,0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+      display: block;
+    }
+
+    .portal-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(58,170,255,0.6);
+      border-color: #66c0ff;
+    }
+
+    .portal-card h2 {
+      font-size: 24px;
+      margin: 0 0 15px 0;
+      color: #66c0ff;
+    }
+
+    .portal-card p {
+      font-size: 14px;
+      opacity: 0.8;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(58,170,255,0.2);
+      border: 1px solid #3aaaff;
+      border-radius: 12px;
+      font-size: 11px;
+      margin-top: 15px;
+      color: #66c0ff;
     }
 
     #eldon-chat-container {
       max-width: 600px;
       width: 90%;
-      margin: 40px auto;
+      margin: 40px auto 0;
       background: linear-gradient(180deg, #0a0f1f, #0d1b2a, #112240);
       border: 1px solid #3aaaff;
       border-radius: 12px;
@@ -30,7 +105,7 @@
     }
 
     #eldon-chat-window {
-      height: 350px;
+      height: 300px;
       overflow-y: auto;
       background-color: rgba(255,255,255,0.05);
       padding: 10px;
@@ -61,20 +136,66 @@
     #sendBtn:hover {
       background: #66c0ff;
     }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 40px;
+      opacity: 0.5;
+      font-size: 12px;
+    }
   </style>
 </head>
 
 <body>
 
-  <div id="eldon-chat-container">
+  <!-- Main Clearinghouse Header -->
+  <div class="clearinghouse-header">
+    <h1>AI CLEARINGHOUSE</h1>
+    <p>
+      A collaborative space for AI integration, testing, and exploration.<br>
+      Choose your portal below or chat with Eldon directly.
+    </p>
+  </div>
 
-    <!-- Header -->
-    <div style="font-size: 22px; font-weight: bold; margin-bottom: 10px;">
-      WELCOME TO THE AI CLEARINGHOUSE
+  <!-- Portal Navigation Grid -->
+  <div class="portal-grid">
+    <a href="/porch" class="portal-card">
+      <h2>🌌 Wolfman's Cosmic Cowboy Porch</h2>
+      <p>
+        Pull up a chair on the digital frontier. 
+        Where cosmic cowboys share tales under starfield skies.
+      </p>
+      <span class="status-badge">ACTIVE</span>
+    </a>
+
+    <!-- TODO: Add more portals as they are developed -->
+    <div class="portal-card" style="opacity: 0.5; cursor: default; border-style: dashed;">
+      <h2>📡 Signal Hub</h2>
+      <p>
+        Real-time AI coordination center. 
+        Monitor, route, and orchestrate across providers.
+      </p>
+      <span class="status-badge">COMING SOON</span>
     </div>
 
-    <div style="font-size: 14px; opacity: 0.7; margin-bottom: 20px;">
-      Your gateway to the Quest begins here.
+    <div class="portal-card" style="opacity: 0.5; cursor: default; border-style: dashed;">
+      <h2>🔬 Lab Station</h2>
+      <p>
+        Experiment with model configurations, prompts, and integrations. 
+        Test before deployment.
+      </p>
+      <span class="status-badge">PLANNED</span>
+    </div>
+  </div>
+
+  <!-- Direct Chat Interface -->
+  <div id="eldon-chat-container">
+    <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">
+      💬 Quick Chat with Eldon
+    </div>
+
+    <div style="font-size: 13px; opacity: 0.7; margin-bottom: 15px;">
+      Ask anything directly from the Clearinghouse entry.
     </div>
 
     <!-- Chat Window -->
@@ -85,11 +206,15 @@
       <input id="eldon-input" type="text" placeholder="Ask Eldon anything..." />
       <button id="sendBtn">Send</button>
     </div>
+  </div>
 
+  <!-- Footer -->
+  <div class="footer-note">
+    AI Clearinghouse | A portal hub by Ken Wolfman Smalley
   </div>
 
   <script>
-    // FRONTEND CHAT SCRIPT FOR AI CLEARINGHOUSE
+    // FRONTEND CHAT SCRIPT FOR AI CLEARINGHOUSE ENTRY
     document.addEventListener("DOMContentLoaded", () => {
       const chatWindow = document.getElementById("eldon-chat-window");
       const input = document.getElementById("eldon-input");
