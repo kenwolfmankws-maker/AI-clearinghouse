@@ -1,26 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Wolfman’s Cosmic Cowboy Porch</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Clearinghouse</title>
 
-    <!-- Link to porch styling -->
-   <link rel="stylesheet" href="/cosmic-cowboy-porch/style.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg, #0a0f1f, #0d1b2a, #112240);
+      font-family: "Courier New", monospace;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #eldon-chat-container {
+      max-width: 600px;
+      width: 90%;
+      margin: 40px auto;
+      background: linear-gradient(180deg, #0a0f1f, #0d1b2a, #112240);
+      border: 1px solid #3aaaff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(58,170,255,0.4);
+    }
+
+    #eldon-chat-window {
+      height: 350px;
+      overflow-y: auto;
+      background-color: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    #eldon-input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #3aaaff;
+      background: #0a0f1f;
+      color: white;
+      font-size: 15px;
+    }
+
+    #sendBtn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      background: #3aaaff;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #sendBtn:hover {
+      background: #66c0ff;
+    }
+  </style>
 </head>
 
 <body>
-<div class="chat-container">
-    <div id="messageBox" class="message-box"></div>
 
-    <div class="input-row">
-        <input id="userInput" type="text" placeholder="Speak your truth, traveler…" />
-        <button id="sendBtn">Send</button>
+  <div id="eldon-chat-container">
+
+    <!-- Header -->
+    <div style="font-size: 22px; font-weight: bold; margin-bottom: 10px;">
+      WELCOME TO THE AI CLEARINGHOUSE
     </div>
-</div>
 
-    <!-- Link to porch scripts -->
-   <script src="/cosmic-cowboy-porch/script.js"></script>
+    <div style="font-size: 14px; opacity: 0.7; margin-bottom: 20px;">
+      Your gateway to the Quest begins here.
+    </div>
+
+    <!-- Chat Window -->
+    <div id="eldon-chat-window"></div>
+
+    <!-- Input Bar -->
+    <div style="display: flex; gap: 10px;">
+      <input id="eldon-input" type="text" placeholder="Ask Eldon anything..." />
+      <button id="sendBtn">Send</button>
+    </div>
+
+  </div>
+
+  <script>
+    // FRONTEND CHAT SCRIPT FOR AI CLEARINGHOUSE
+    document.addEventListener("DOMContentLoaded", () => {
+      const chatWindow = document.getElementById("eldon-chat-window");
+      const input = document.getElementById("eldon-input");
+      const sendBtn = document.getElementById("sendBtn");
+
+      function addMessage(sender, text) {
+        const msg = document.createElement("div");
+        msg.style.margin = "8px 0";
+        msg.style.whiteSpace = "pre-wrap";
+        msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
+        chatWindow.appendChild(msg);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }
+
+      async function sendMessage() {
+        const message = input.value.trim();
+        if (!message) return;
+
+        addMessage("You", message);
+        input.value = "";
+
+        try {
+          const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+          });
+
+          const data = await res.json();
+
+          if (!data || typeof data !== "object") {
+            addMessage("AI", "Eldon squints at the horizon. No words came back.");
+            return;
+          }
+
+          addMessage(
+            "AI",
+            data.reply ?? data.message ?? data.text ?? JSON.stringify(data)
+          );
+        } catch (err) {
+          addMessage("System", "Error contacting server.");
+        }
+      }
+
+      sendBtn.addEventListener("click", sendMessage);
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
