@@ -1,6 +1,8 @@
 {
-  "routes": [
-    { "src": "/porch", "dest": "/porch/index.html" },
-    { "src": "/", "dest": "/index.html" }
+  "rewrites": [
+    {
+      "source": "/porch",
+      "destination": "/porch/index.html"
+    }
   ]
 }
