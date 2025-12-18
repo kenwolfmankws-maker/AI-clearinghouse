@@ -55,6 +55,7 @@ export default async function handler(req, res) {
     { role: "user", content: message }
   ],
 });
+const reply = completion.choices?.[0]?.message?.content ?? "";
 
 
     return res.status(200).json({ reply });
