@@ -15,8 +15,6 @@ const openai = new OpenAI({
 // Middleware
 app.use(cors());
 app.use(express.json());
-// Serve porch subdirectory
-app.use('/porch', express.static(path.join(__dirname, 'porch')));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -88,6 +86,5 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📝 API endpoint: http://localhost:${PORT}/api/chat`);
-  console.log(`🏠 Clearinghouse Entry: http://localhost:${PORT}/`);
-  console.log(`🌌 Cosmic Cowboy Porch: http://localhost:${PORT}/porch`);
+  console.log(`🏠 AI Clearinghouse: http://localhost:${PORT}/`);
 });

@@ -1,8 +1,2 @@
 {
-  "rewrites": [
-    {
-      "source": "/porch",
-      "destination": "/porch/index.html"
-    }
-  ]
 }
