@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Clearinghouse – Local Dev Interface</title>
 
-    <!-- Link to porch styling -->
+    <!-- Link to styling -->
     <link rel="stylesheet" href="/style.css">
 
 </head>
@@ -16,24 +16,24 @@
 
     <!-- 
       NOTE: This is the LEGACY local-dev chat interface.
-      Production uses root index.html (Clearinghouse entry portal).
-      The Porch experience lives at /porch/index.html.
+      Production uses root index.html (AI Clearinghouse).
     -->
-    <div class="porch-container">
+    <div class="container">
         <h1>AI Clearinghouse – Local Dev</h1>
         <p>Quick chat interface for testing. Production: see root index.html</p>
     </div>
-<div id="eldon-chat-window"></div>
+    
+    <div id="chat-window"></div>
 
-<input
-  id="eldon-input"
-  type="text"
-  placeholder="Say something to Eldon…"
-/>
+    <input
+      id="chat-input"
+      type="text"
+      placeholder="Type a message..."
+    />
 
-<button id="sendBtn">Send</button>
+    <button id="sendBtn">Send</button>
 
-    <!-- Link to porch scripts -->
+    <!-- Link to scripts -->
     <script src="/chat-frontend.js" defer></script>
 
 </body>

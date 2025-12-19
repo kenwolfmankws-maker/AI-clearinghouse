@@ -1,8 +1,8 @@
 // FRONTEND CHAT SCRIPT FOR AI CLEARINGHOUSE
 
 document.addEventListener("DOMContentLoaded", () => {
-  const chatWindow = document.getElementById("eldon-chat-window");
-  const input = document.getElementById("eldon-input");
+  const chatWindow = document.getElementById("chat-window");
+  const input = document.getElementById("chat-input");
   const sendBtn = document.getElementById("sendBtn");
 
   function addMessage(sender, text) {
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (!data || typeof data !== "object") {
-        addMessage("AI", "Eldon squints at the horizon. No words came back.");
+        addMessage("AI", "No response received from server.");
         return;
       }
 
