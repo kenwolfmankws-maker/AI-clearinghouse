@@ -33,7 +33,6 @@ const MYTHIC_KEYWORDS = [
   'mirror of wisdom',
 ];
 
-const PROFESSIONAL_KEYWORDS = ['professional', 'utilitarian', 'service', 'support'];
 
 
 // Get staged files
@@ -177,8 +176,9 @@ function checkSymbolicDeletion(filePath) {
         };
       }
     } catch (err) {
-      // Log error if it's not just an empty result
-      if (err.code !== 0 && err.message && !err.message.includes('no changes')) {
+      // Log error if it's a real problem (execSync throws on non-zero exit)
+      // Check err.status for the exit code, not err.code
+      if (err.status !== undefined && err.status !== 0 && err.message && !err.message.includes('no changes')) {
         console.warn(`Warning: Could not check for file deletions: ${err.message}`);
       }
     }
