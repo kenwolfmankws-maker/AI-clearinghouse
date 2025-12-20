@@ -18,8 +18,23 @@ const CLEARINGHOUSE_PATHS = [
 
 // Keywords that indicate boundary violations
 const ELDON_KEYWORDS = ['Eldon', 'eldon', 'ELDON'];
-const MYTHIC_KEYWORDS = ['cosmic cowboy', 'gatekeeper', 'threshold between worlds', 'stars and dust'];
+
+// Extended mythic keywords for better detection
+const MYTHIC_KEYWORDS = [
+  'cosmic cowboy', 
+  'gatekeeper', 
+  'threshold between worlds', 
+  'stars and dust',
+  'sacred space',
+  'mythic realm',
+  'dreamweaver',
+  'algo-rhythm',
+  'the forge',
+  'mirror of wisdom',
+];
+
 const PROFESSIONAL_KEYWORDS = ['professional', 'utilitarian', 'service', 'support'];
+
 
 // Get staged files
 function getStagedFiles() {
@@ -109,13 +124,20 @@ function checkProfessionalInSanctuary(filePath, content) {
     return null;
   }
   
-  // Look for overly professional/corporate language patterns
+  // Extended list of professional/corporate language patterns
   const professionalPatterns = [
     /professional service/i,
     /customer support/i,
     /business hours/i,
     /corporate/i,
     /enterprise solution/i,
+    /client portal/i,
+    /service level/i,
+    /kpi/i,
+    /roi/i,
+    /stakeholder/i,
+    /deliverable/i,
+    /value proposition/i,
   ];
   
   const violations = [];
@@ -155,7 +177,10 @@ function checkSymbolicDeletion(filePath) {
         };
       }
     } catch (err) {
-      // Ignore errors in git diff check
+      // Log error if it's not just an empty result
+      if (err.code !== 0 && err.message && !err.message.includes('no changes')) {
+        console.warn(`Warning: Could not check for file deletions: ${err.message}`);
+      }
     }
   }
   
