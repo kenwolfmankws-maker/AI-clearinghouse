@@ -1,1 +1,2 @@
 node scripts/precommit-guard.cjs
+node scripts/boundary-check.cjs

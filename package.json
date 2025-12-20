@@ -18,7 +18,7 @@
     "smoke": "node scripts/smoke.js",
     "oidc:test": "node scripts/oidc-test.cjs",
     "clean": "rimraf node_modules",
-  
+    "boundary:check": "node scripts/boundary-check.cjs",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "devDependencies": {
