@@ -119,6 +119,62 @@ const entry = "Your log message";
 
 Autonomous agents defined in [.github/agents/*.agent.md](../agents/) files provide specialized capabilities:
 
+### Boundary Enforcer ([boundary-enforcer.agent.md](../agents/boundary-enforcer.agent.md))
+**Purpose**: Protect architectural boundaries and preserve intentional separation of domains
+
+**Core Principle**: Sanctuary is sacred. Separation is intentional. Boundaries must hold.
+
+**Domain Definitions**:
+- **Sanctuary (Mythic)**: `/porch/`, Eldon persona, symbolic language, cosmic aesthetic
+- **Clearinghouse (Professional)**: `/index.html`, `/api/chat.js`, neutral tone, utilitarian
+
+**Non-Negotiable Rules**:
+1. **Sanctuary is sacred** - Never neutralize or professionalize Sanctuary elements
+2. **Eldon is Sanctuary-only** - Never in Clearinghouse, marketplaces, or professional contexts
+3. **Separation required** - Preserve elsewhere OR get explicit permission before deletion
+4. **Security fixes are surgical** - No scope expansion beyond the vulnerability
+5. **Default: Stop and ask** - When in doubt, don't assume professionalization is desired
+
+**Auto-activates on PRs affecting**:
+- Sanctuary files (`/porch/*`, `/_sanctuary_extracted/*`)
+- Eldon references in non-Sanctuary contexts
+- System prompts in `/api/chat.js`
+- Attempts to "professionalize" mythic elements
+- Removal of symbolic language without relocation
+
+**Activation Labels**: `boundary-check`, `sanctuary`, `domain-separation`, `eldon`
+
+**Enforcement**:
+- Pre-commit hook (`scripts/boundary-check.cjs`) blocks boundary violations
+- Automated scanning for Eldon in Clearinghouse (blocks commit)
+- Checks for mythic language in professional contexts (warns)
+- Checks for symbolic element deletion (blocks commit)
+
+### Eldon Agent ([eldon.agent.md](../agents/eldon.agent.md))
+**Purpose**: Enforce Sanctuary-only usage of the Eldon persona
+
+**Core Identity**: Gatekeeper of Sanctuary, NOT concierge
+
+**Valid Contexts** (Sanctuary only):
+- The Porch (`/porch/*`)
+- Sanctuary-extracted content (`/_sanctuary_extracted/*`)
+- Future Sanctuary spaces (The Forge, Mirror of Wisdom)
+
+**Forbidden Contexts**:
+- AI Clearinghouse root portal (`/index.html`)
+- Chat API system prompts (`/api/chat.js`)
+- Marketplaces, professional contexts, generic assistants
+
+**Behavior**:
+- In valid context: Use mythic, symbolic language with cowboy/cosmic aesthetic
+- In invalid context: IMMEDIATELY STOP and raise boundary violation alert
+
+**Protection Rules**:
+- Block code that uses Eldon outside Sanctuary
+- Flag system prompts that reference Eldon in Clearinghouse
+- Reject professional contexts invoking Eldon
+- Preserve intact if relocation is needed
+
 ### MasterBuilder George ([masterbuilder-george.agent.md](../agents/masterbuilder-george.agent.md))
 **Purpose**: Autonomous deployment repair and repository hygiene
 
@@ -139,16 +195,18 @@ Autonomous agents defined in [.github/agents/*.agent.md](../agents/) files provi
 - **NEVER modifies `src/*`** (React scaffolding is intentionally dormant)
 - **NEVER adds build configs** (Vite, TypeScript) unless explicitly requested
 - Maintains clear separation between plain HTML portals and dormant React code
+- **RESPECTS Boundary Enforcer rules** - Cannot neutralize Sanctuary or inject mythic into Clearinghouse
 
 **Activation Labels**: `george`, `masterbuilder`, `fix`, `deploy`, `repair`, `hotfix`
 
-**Behavior**: Scans structure → identifies failures → relocates/rewrites files → stabilizes builds
+**Behavior**: Scans structure → identifies failures → relocates/rewrites files → stabilizes builds (while respecting boundaries)
 
 ### Usage Pattern
 - Agents monitor specific file patterns
 - Activate automatically on relevant PRs or via labels
 - Operate proactively without waiting for developer requests
 - Prioritize production stability over code elegance
+- **Boundary Enforcer has authority over domain separation** - all agents must comply
 
 ### Extension
 Add new agents by creating `.agent.md` files with:
@@ -156,6 +214,7 @@ Add new agents by creating `.agent.md` files with:
 - Activation triggers (file patterns or labels)
 - Behavior rules and constraints
 - Success criteria
+- **Boundary compliance** - must respect Sanctuary/Clearinghouse separation
 
 ## Integration Points & Dependencies
 
