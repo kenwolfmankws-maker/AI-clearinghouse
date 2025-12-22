@@ -1,10 +1,12 @@
-// Top-level runner and simple chat helper
+// Top-level runner and simple chat helper (ESM)
 // Loads environment from .env so you don't need to set PowerShell env vars
 
-require('dotenv').config();
-const OpenAI = require('openai');
+import dotenv from 'dotenv';
+import OpenAI from 'openai';
 
-function getClient() {
+dotenv.config();
+
+export function getClient() {
   const key = process.env.OPENAI_API_KEY;
   if (!key) {
     console.error('Missing OPENAI_API_KEY.');
@@ -15,7 +17,7 @@ function getClient() {
   return new OpenAI({ apiKey: key });
 }
 
-async function chat(message) {
+export async function chat(message) {
   const client = getClient();
   const prompt = message && message.trim() ? message : 'Say hello briefly.';
   try {
@@ -32,13 +34,7 @@ async function chat(message) {
   }
 }
 
-async function main() {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const input = process.argv.slice(2).join(' ');
-  await chat(input);
+  chat(input);
 }
-
-if (require.main === module) {
-  main();
-}
-
-module.exports = { chat, getClient };
