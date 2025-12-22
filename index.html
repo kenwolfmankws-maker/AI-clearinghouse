@@ -63,17 +63,6 @@
             box-shadow: 0 8px 24px rgba(77, 168, 218, 0.2);
         }
         
-        .portal-card.coming-soon {
-            opacity: 0.5;
-            cursor: default;
-            border-style: dashed;
-        }
-        
-        .portal-card.coming-soon:hover {
-            transform: none;
-            box-shadow: none;
-        }
-        
         .portal-icon {
             font-size: 2.5rem;
             margin-bottom: 1rem;
@@ -97,16 +86,8 @@
             border-radius: 12px;
             font-size: 0.8rem;
             font-weight: 600;
-        }
-        
-        .status-active {
             background: rgba(76, 175, 80, 0.2);
             color: #4caf50;
-        }
-        
-        .status-planned {
-            background: rgba(255, 152, 0, 0.2);
-            color: #ff9800;
         }
         
         footer {
@@ -130,7 +111,6 @@
     </header>
     
     <div class="portals-grid">
-        <!-- Active Portal: The Porch -->
         <a href="/porch">
             <div class="portal-card">
                 <div class="portal-icon">🌌</div>
@@ -138,29 +118,9 @@
                 <p class="portal-description">
                     Wolfman's thematic experience portal - an immersive interface with specialized aesthetic and conversational focus.
                 </p>
-                <span class="portal-status status-active">ACTIVE</span>
+                <span class="portal-status">ACTIVE</span>
             </div>
         </a>
-        
-        <!-- Planned Portal: Signal Hub -->
-        <div class="portal-card coming-soon">
-            <div class="portal-icon">📡</div>
-            <h2 class="portal-title">Signal Hub</h2>
-            <p class="portal-description">
-                Real-time AI coordination center for monitoring and managing multiple AI streams.
-            </p>
-            <span class="portal-status status-planned">PLANNED</span>
-        </div>
-        
-        <!-- Planned Portal: Lab Station -->
-        <div class="portal-card coming-soon">
-            <div class="portal-icon">🔬</div>
-            <h2 class="portal-title">Lab Station</h2>
-            <p class="portal-description">
-                Model experimentation interface for testing and comparing AI capabilities.
-            </p>
-            <span class="portal-status status-planned">PLANNED</span>
-        </div>
     </div>
     
     <footer>
