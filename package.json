@@ -10,6 +10,7 @@
   "scripts": {
     "start": "node index.cjs",
     "web": "node local-server.cjs",
+    "vercel-build": "echo Deploying static site (no build step)",
     "chat": "node GeorgePortal/chat.cjs",
     "verify": "node scripts/verify-key.cjs",
     "search": "node scripts/search-logs.cjs",
