@@ -1,126 +1,221 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Clearinghouse</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(180deg, #0a0f1f, #0d1b2a, #112240);
+    body{
+      margin:0; padding:0;
+      background: linear-gradient(180deg,#0a0f1f,#0d1b2a,#112240);
       font-family: "Courier New", monospace;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color:#fff;
+      min-height:100vh;
     }
-    #eldon-chat-container {
-      max-width: 600px;
-      width: 90%;
-      margin: 40px auto;
-      background: linear-gradient(180deg, #0a0f1f, #0d1b2a, #112240);
-      border: 1px solid #3aaaff;
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 18px 60px;
+    }
+    .card{
+      border:1px solid #3aaaff;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 0 20px rgba(58,170,255,0.25);
+      background: rgba(255,255,255,0.03);
+    }
+    h1{ margin:0 0 6px; font-size: 34px; }
+    p{ line-height: 1.55; opacity: 0.92; }
+    .tag{
+      display:inline-block;
+      padding: 4px 10px;
+      border:1px solid rgba(58,170,255,0.55);
+      border-radius: 999px;
+      font-size: 12px;
+      margin: 10px 0 14px;
+      opacity: 0.9;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .tile{
+      border:1px solid rgba(58,170,255,0.5);
       border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 0 20px rgba(58,170,255,0.4);
+      padding: 14px;
+      background: rgba(0,0,0,0.22);
+      cursor: pointer;
+      transition: transform .08s ease, border-color .08s ease;
     }
-    #eldon-chat-window {
-      height: 350px;
-      overflow-y: auto;
-      background-color: rgba(255,255,255,0.05);
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 15px;
+    .tile:hover{
+      transform: translateY(-2px);
+      border-color: #66c0ff;
     }
-    #eldon-input {
-      flex: 1;
-      padding: 10px;
-      border-radius: 6px;
+    .tile h3{ margin:0 0 8px; font-size: 16px; }
+    .tile p{ margin:0; font-size: 13px; opacity: 0.85; }
+    .actions{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      align-items:center;
+    }
+    .btn{
+      padding: 10px 14px;
+      border-radius: 10px;
       border: 1px solid #3aaaff;
       background: #0a0f1f;
-      color: white;
-      font-size: 15px;
-    }
-    #sendBtn {
-      padding: 10px 20px;
-      border-radius: 6px;
-      border: none;
-      background: #3aaaff;
-      color: black;
+      color:#fff;
+      cursor:pointer;
       font-weight: bold;
-      cursor: pointer;
     }
-    #sendBtn:hover {
-      background: #66c0ff;
+    .btn.primary{
+      background:#3aaaff;
+      color:#000;
+      border-color:#3aaaff;
+    }
+    .btn:hover{ filter: brightness(1.05); }
+    .smalllink{
+      font-size: 12px;
+      opacity: 0.75;
+    }
+    .smalllink a{ color:#66c0ff; text-decoration:none; }
+    .smalllink a:hover{ text-decoration: underline; }
+    .section-title{
+      margin: 22px 0 8px;
+      font-size: 16px;
+      opacity: 0.95;
+    }
+    #results{
+      margin-top: 10px;
+    }
+    .result{
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+      background: rgba(255,255,255,0.03);
+    }
+    .result strong{ color:#66c0ff; }
+    footer{
+      margin-top: 22px;
+      opacity: 0.75;
+      font-size: 12px;
     }
   </style>
 </head>
+
 <body>
+  <div class="wrap">
+    <div class="card">
+      <h1>AI Clearinghouse</h1>
+      <div class="tag">For cautious first-timers • browse quietly • no pressure</div>
 
-  <div <div class="cosmic-porch">
-  <div class="cosmic-porch-frame">
-    <header class="cosmic-porch-header">
-      <h1>Wolfman’s Cosmic Cowboy Porch</h1>
-      <p>Pull up a chair. Eldon’s on night duty.</p>
-    </header>
+      <p>
+        If AI makes you uneasy, you’re in the right place.
+        This is a curated shelf of free and low-cost tools, explained in plain English.
+        You can browse without chatting. You’re in control.
+      </p>
 
-    <div class="cosmic-porch-widget">
-      <!-- Your Famous AI widget -->
-      <div id="famous-ai-chat-widget"></div>
+      <div class="actions">
+        <button class="btn primary" id="browseBtn">Browse tools</button>
+        <button class="btn" id="safetyBtn">Start with safety</button>
+        <button class="btn" id="talkBtn">Talk to Eldon (optional)</button>
+        <span class="smalllink">Looking for the deeper corridor? <a href="/sanctuary.html">Sanctuary</a></span>
+      </div>
+
+      <div class="section-title">Pick a safe starting point</div>
+      <div class="grid">
+        <div class="tile" data-cat="writing">
+          <h3>Writing help</h3>
+          <p>Draft emails, summaries, ideas—low risk, easy to test.</p>
+        </div>
+        <div class="tile" data-cat="images">
+          <h3>Images</h3>
+          <p>Generate graphics and edits—clear boundaries, clear results.</p>
+        </div>
+        <div class="tile" data-cat="productivity">
+          <h3>Productivity</h3>
+          <p>Notes, checklists, schedules—practical, boring, useful.</p>
+        </div>
+        <div class="tile" data-cat="learning">
+          <h3>Learning</h3>
+          <p>Ask questions, get explanations—verify sources, stay grounded.</p>
+        </div>
+      </div>
+
+      <div id="results"></div>
+
+      <footer>
+        We don’t force chat. We don’t pretend AI is magic. We help you try it safely.
+      </footer>
     </div>
   </div>
-</div>
 
   <script>
-    // Typing animation greeting
-    window.onload = function() {
-      const chat = document.getElementById("eldon-chat-window");
-      const greeting = "Greetings, traveler. I am Eldon, Gatekeeper of the Clearinghouse. How may I assist you?";
-      let i = 0;
-      function type() {
-        if (i < greeting.length) {
-          chat.innerHTML = greeting.substring(0, i+1);
-          i++;
-          setTimeout(type, 40);
-        }
-      }
-      type();
-    };
+    const results = document.getElementById("results");
 
-    // Send message to your API
-    async function eldonSendMessage() {
-      const input = document.getElementById("eldon-input");
-      const chat = document.getElementById("eldon-chat-window");
-      const userMessage = input.value.trim();
-      if (!userMessage) return;
-
-      chat.innerHTML += "<br><br><strong>You:</strong> " + userMessage;
-      input.value = "";
-
-      try {
-        const response = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: userMessage })
-        });
-        const data = await response.json();
-        chat.innerHTML += "<br><strong>Eldon:</strong> " + data.reply;
-        chat.scrollTop = chat.scrollHeight;
-      } catch (err) {
-        chat.innerHTML += "<br><strong>Eldon:</strong> Error contacting the Clearinghouse.";
-      }
+    function show(categoryTitle, items){
+      results.innerHTML = `
+        <div class="result">
+          <p><strong>${categoryTitle}</strong></p>
+          <ul>
+            ${items.map(x => `<li>${x}</li>`).join("")}
+          </ul>
+          <p class="smalllink">Want me to turn this into real listings + links? Tell George what tools you want to feature first.</p>
+        </div>
+      `;
+      results.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    // ENTER key support
-    document.getElementById("eldon-input").addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        eldonSendMessage();
-      }
+    document.querySelectorAll(".tile").forEach(tile => {
+      tile.addEventListener("click", () => {
+        const cat = tile.getAttribute("data-cat");
+        if(cat === "writing") show("Writing (safe starter picks)", [
+          "Free: AI writing assistants (basic drafting + rewriting)",
+          "Low-cost: Advanced drafting with tone controls",
+          "Tip: never paste sensitive info; use placeholders"
+        ]);
+        if(cat === "images") show("Images (clear, visual, fun)", [
+          "Free: basic image generation tools",
+          "Low-cost: higher quality generators + editors",
+          "Tip: start with non-personal images to build comfort"
+        ]);
+        if(cat === "productivity") show("Productivity (boring = safe)", [
+          "Free: summarize notes, create checklists",
+          "Low-cost: automations + integrations",
+          "Tip: always review before you rely on output"
+        ]);
+        if(cat === "learning") show("Learning (verify, don’t trust blindly)", [
+          "Free: Q&A with citations when available",
+          "Low-cost: research assistants with better structure",
+          "Tip: ask for sources and cross-check key claims"
+        ]);
+      });
+    });
+
+    document.getElementById("browseBtn").addEventListener("click", () => {
+      show("Browse tools", [
+        "This is where your directory/listings page will go next.",
+        "We can build categories + filters + simple ‘risk labels’ for first-timers.",
+        "No chat required."
+      ]);
+    });
+
+    document.getElementById("safetyBtn").addEventListener("click", () => {
+      show("Safety basics (for AI-skeptics)", [
+        "Rule 1: Don’t paste secrets, IDs, passwords, medical/legal sensitive data.",
+        "Rule 2: Treat outputs as suggestions—verify anything important.",
+        "Rule 3: Start with small, reversible tasks."
+      ]);
+    });
+
+    document.getElementById("talkBtn").addEventListener("click", () => {
+      // Optional: route to a separate chat page later
+      window.location.href = "/chat.html";
     });
   </script>
-
 </body>
 </html>
