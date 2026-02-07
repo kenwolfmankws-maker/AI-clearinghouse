@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Talk to Eldon — AI Clearinghouse</title>
+  <style>
+    body{
+      margin:0; padding:0;
+      background: linear-gradient(180deg,#0a0f1f,#0d1b2a,#112240);
+      font-family: "Courier New", monospace;
+      color:#fff;
+      min-height:100vh;
+    }
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+    .card{
+      border:1px solid #3aaaff;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 0 20px rgba(58,170,255,0.25);
+      background: rgba(255,255,255,0.03);
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    h1{ margin:0; font-size: 22px; }
+    .sub{ margin: 6px 0 0; opacity: 0.85; font-size: 13px; line-height: 1.5; }
+    .btn{
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #3aaaff;
+      background: #0a0f1f;
+      color:#fff;
+      cursor:pointer;
+      font-weight: bold;
+      text-decoration:none;
+      display:inline-block;
+    }
+    .btn.primary{
+      background:#3aaaff;
+      color:#000;
+      border-color:#3aaaff;
+    }
+    .btn:hover{ filter: brightness(1.05); }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media(min-width: 900px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Eldon (simple chat) */
+    .chatbox{
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(0,0,0,0.22);
+      min-height: 420px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    #eldon-chat-window{
+      flex:1;
+      overflow-y:auto;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 10px;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+    .row{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+    }
+    #eldon-input{
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #3aaaff;
+      background: #0a0f1f;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+    .hint{
+      font-size: 12px;
+      opacity: 0.75;
+      margin: 0;
+    }
+
+    /* Widget slot */
+    .widgetbox{
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(0,0,0,0.22);
+      min-height: 420px;
+    }
+    .widgettitle{
+      margin: 0 0 10px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    #famous-ai-chat-widget{
+      border-radius: 10px;
+      min-height: 360px;
+    }
+    .notice{
+      border:1px dashed rgba(58,170,255,0.55);
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 12px;
+      opacity: 0.85;
+      margin-top: 10px;
+    }
+    code{ color:#66c0ff; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h1>Talk to Eldon (Optional)</h1>
+          <p class="sub">
+            If you’d rather browse quietly, go back anytime.
+            Eldon is here only if you want help picking a safe tool.
+          </p>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn" href="/">← Back to Browse</a>
+          <button class="btn primary" id="clearBtn" type="button">Clear</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- LEFT: Simple Eldon chat via /api/chat -->
+        <div class="chatbox">
+          <p class="hint">Simple mode (uses <code>/api/chat</code> if you have it)</p>
+          <div id="eldon-chat-window"></div>
+
+          <div class="row">
+            <input id="eldon-input" type="text" placeholder="Ask Eldon… (press Enter)" autocomplete="off" />
+            <button class="btn primary" id="sendBtn" type="button">Send</button>
+          </div>
+
+          <p class="hint">
+            Safety reminder: don’t paste private info. Use placeholders.
+          </p>
+        </div>
+
+        <!-- RIGHT: FamousAI widget mount point (optional) -->
+        <div class="widgetbox">
+          <p class="widgettitle">Widget mode (mount your FamousAI widget here)</p>
+          <div id="famous-ai-chat-widget"></div>
+
+          <div class="notice">
+            If your FamousAI widget requires a script tag, add it near the bottom of this file.
+            If nothing appears here, that’s okay—simple mode still works.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById("eldon-chat-window");
+    const input = document.getElementById("eldon-input");
+    const sendBtn = document.getElementById("sendBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    function appendLine(html){
+      chat.innerHTML += html;
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    // Greeting (calm, non-pushy)
+    function greet(){
+      chat.innerHTML = "";
+      appendLine("<strong>Eldon:</strong> Evening. Want a safe, low-pressure AI recommendation? Tell me what you’re trying to do.");
+      appendLine("<br><span style='opacity:.8'>Example: “I want help rewriting an email” or “I just want to browse free tools.”</span><br><br>");
+    }
+
+    window.addEventListener("load", greet);
+
+    async function eldonSendMessage(){
+      const userMessage = (input.value || "").trim();
+      if(!userMessage) return;
+
+      appendLine("<strong>You:</strong> " + escapeHtml(userMessage) + "<br>");
+      input.value = "";
+
+      // If you don't actually have /api/chat, we handle it gracefully.
+      try{
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMessage })
+        });
+
+        if(!res.ok){
+          throw new Error("HTTP " + res.status);
+        }
+
+        const data = await res.json();
+        const reply = data && data.reply ? data.reply : "I didn’t get a reply payload.";
+        appendLine("<strong>Eldon:</strong> " + escapeHtml(reply) + "<br><br>");
+      }catch(err){
+        appendLine(
+          "<strong>Eldon:</strong> I can’t reach <code>/api/chat</code> right now. " +
+          "That’s okay—your site still works. When you’re ready, wire up the API route on Vercel.<br><br>"
+        );
+      }
+    }
+
+    // Prevent XSS from user text
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    sendBtn.addEventListener("click", eldonSendMessage);
+    input.addEventListener("keydown", (e) => {
+      if(e.key === "Enter"){
+        e.preventDefault();
+        eldonSendMessage();
+      }
+    });
+
+    clearBtn.addEventListener("click", greet);
+  </script>
+
+  <!--
+    OPTIONAL: If your FamousAI widget requires a script include, paste it here.
+    Example (fake):
+    <script src="https://example.com/famousai-widget.js"></script>
+    <script>
+      FamousAI.mount("#famous-ai-chat-widget", { ...config });
+    </script>
+  -->
+</body>
+</html>
