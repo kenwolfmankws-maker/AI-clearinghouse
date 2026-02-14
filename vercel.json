@@ -1,5 +1,65 @@
 {
+  "version": 2,
+  "name": "ai-clearinghouse",
+  "regions": ["iad1"],
+  "buildCommand": "echo 'No build needed - static files'",
   "framework": null,
-  "buildCommand": null,
-  "outputDirectory": "public"
+  "installCommand": "npm install --omit=dev",
+  "rewrites": [
+    {
+      "source": "/rosies-garden",
+      "destination": "/preview.html"
+    },
+    {
+      "source": "/rosies-garden/(.*)",
+      "destination": "/$1"
+    },
+    {
+      "source": "/hub",
+      "destination": "/AI Clearinghouse Hub.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(js|css|webp|png|jpg|jpeg|gif|svg|ico|json|download)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?<subdomain>.*)\\.vercel\\.app"
+        }
+      ],
+      "destination": "/rosies-garden",
+      "permanent": false
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
