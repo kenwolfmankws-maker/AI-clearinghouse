@@ -1,0 +1,294 @@
+(function() {
+  // Prevent multiple instances of this script from running
+  if (window.__EVENTS_SCRIPT_LOADED__) {
+    console.debug('Events: Script already loaded, skipping initialization');
+    return;
+  }
+  window.__EVENTS_SCRIPT_LOADED__ = true;
+
+  const ENDPOINT = 'https://events.famous.ai/event';
+  const SITE_ID = window.__SITE_ID__ || 'unknown';
+  const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes in milliseconds
+  const USER_TIMEOUT = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+
+  // Prevent duplicate page views
+  let lastTrackedUrl = null;
+  let lastTrackTime = 0;
+  const MIN_TRACK_INTERVAL = 500; // Minimum 500ms between duplicate URL tracking
+
+  function getUserId() {
+    const now = Date.now();
+    const stored = localStorage.getItem('events_user');
+
+    if (stored) {
+      try {
+        const user = JSON.parse(stored);
+        const timeSinceLastActivity = now - user.lastActivity;
+
+        // If less than 30 days since last activity, use existing user ID
+        if (timeSinceLastActivity < USER_TIMEOUT) {
+          // Update last activity time
+          user.lastActivity = now;
+          localStorage.setItem('events_user', JSON.stringify(user));
+          return user.id;
+        }
+      } catch (e) {
+        // Invalid stored user, will create new one
+      }
+    }
+
+    // Create new user ID (either expired or doesn't exist)
+    const newUserId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36);
+    const newUser = {
+      id: newUserId,
+      startTime: now,
+      lastActivity: now
+    };
+
+    localStorage.setItem('events_user', JSON.stringify(newUser));
+    return newUserId;
+  }
+
+  function getSessionId() {
+    const now = Date.now();
+    const stored = localStorage.getItem('events_session');
+
+    if (stored) {
+      try {
+        const session = JSON.parse(stored);
+        const timeSinceLastActivity = now - session.lastActivity;
+
+        // If less than 30 minutes since last activity, use existing session
+        if (timeSinceLastActivity < SESSION_TIMEOUT) {
+          // Update last activity time
+          session.lastActivity = now;
+          localStorage.setItem('events_session', JSON.stringify(session));
+          return session.id;
+        }
+      } catch (e) {
+        // Invalid stored session, will create new one
+      }
+    }
+
+    // Create new session (either expired or doesn't exist)
+    const newSessionId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36);
+    const newSession = {
+      id: newSessionId,
+      startTime: now,
+      lastActivity: now
+    };
+
+    localStorage.setItem('events_session', JSON.stringify(newSession));
+    return newSessionId;
+  }
+
+  function updateActivity() {
+    const now = Date.now();
+
+    // Update session activity
+    const storedSession = localStorage.getItem('events_session');
+    if (storedSession) {
+      try {
+        const session = JSON.parse(storedSession);
+        session.lastActivity = now;
+        localStorage.setItem('events_session', JSON.stringify(session));
+      } catch (e) {
+        // If session is corrupted, getSessionId() will create a new one next time
+      }
+    }
+
+    // Update user activity
+    const storedUser = localStorage.getItem('events_user');
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        user.lastActivity = now;
+        localStorage.setItem('events_user', JSON.stringify(user));
+      } catch (e) {
+        // If user is corrupted, getUserId() will create a new one next time
+      }
+    }
+  }
+
+  function setupActivityTracking() {
+    // Track various user activities to reset inactivity timer
+    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+
+    let activityTimeout;
+    const throttledUpdateActivity = () => {
+      clearTimeout(activityTimeout);
+      activityTimeout = setTimeout(updateActivity, 1000); // Throttle to once per second
+    };
+
+    activityEvents.forEach(event => {
+      document.addEventListener(event, throttledUpdateActivity, { passive: true });
+    });
+
+    // Track page visibility changes (tab switching, minimizing)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        // User came back to tab, check if session/user should be renewed
+        getSessionId(); // This will check timeout and create new session if needed
+        getUserId(); // This will check timeout and create new user ID if needed
+      } else {
+        // User left tab, update last activity
+        updateActivity();
+      }
+    });
+
+    // Track when user is about to leave the page
+    window.addEventListener('beforeunload', updateActivity);
+  }
+
+  function getUTMParams() {
+    const params = new URLSearchParams(location.search);
+    return {
+      utm_source: params.get('utm_source'),
+      utm_medium: params.get('utm_medium'),
+      utm_campaign: params.get('utm_campaign')
+    };
+  }
+
+  function trackPageView() {
+    if (SITE_ID === 'unknown') {
+      console.warn('Events: SITE_ID not configured');
+      return;
+    }
+
+    const currentUrl = location.href;
+    const now = Date.now();
+
+    // Prevent duplicate tracking of the same URL within MIN_TRACK_INTERVAL
+    if (lastTrackedUrl === currentUrl && (now - lastTrackTime) < MIN_TRACK_INTERVAL) {
+      console.debug('Events: Duplicate page view prevented for', currentUrl);
+      return;
+    }
+
+    lastTrackedUrl = currentUrl;
+    lastTrackTime = now;
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        siteId: SITE_ID,
+        sessionId: getSessionId(),
+        userId: getUserId(),
+        event: 'page_view',
+        url: location.href,
+        referrer: document.referrer,
+        page_title: document.title,
+        screen_resolution: `${window.screen.width}x${window.screen.height}`,
+        language: navigator.language,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        ...getUTMParams()
+      })
+    }).catch(err => {
+      console.debug('Events tracking failed:', err);
+    });
+  }
+
+  events.js.download → creative-tracker.js
+// creative-tracker.js
+(function () {
+  const sessionStart = Date.now();
+  let currentPage = location.pathname;
+  let creativeEvents = [];
+
+  // 🎵 Capture creative acts
+  const logActivity = (type, details = {}) => {
+    creativeEvents.push({
+      time: new Date().toISOString(),
+      type,
+      details,
+      page: currentPage,
+    });
+    console.log("🎨 Creative pulse:", type, details);
+  };
+
+  const saveSession = () => {
+    const duration = ((Date.now() - sessionStart) / 1000).toFixed(2);
+    const summary = { duration, creativeEvents };
+    localStorage.setItem("creative_session", JSON.stringify(summary, null, 2));
+    console.log("✨ Session saved:", summary);
+  };
+
+  // First page view
+  const trackPageView = () => logActivity("view", { page: location.pathname });
+
+  // Handle navigation in SPAs
+  const onUrlChange = () => {
+    currentPage = location.pathname;
+    setTimeout(trackPageView, 150);
+  };
+
+  const originalPush = history.pushState;
+  const originalReplace = history.replaceState;
+
+  history.pushState = function () {
+    originalPush.apply(this, arguments);
+    onUrlChange();
+  };
+  history.replaceState = function () {
+    originalReplace.apply(this, arguments);
+    onUrlChange();
+  };
+
+  window.addEventListener("popstate", onUrlChange);
+  window.addEventListener("beforeunload", saveSession);
+
+  // Initial activation
+  trackPageView();// creative-tracker.js
+(function () {
+  const sessionStart = Date.now();
+  let currentPage = location.pathname;
+  let creativeEvents = [];
+
+  // 🎵 Capture creative acts
+  const logActivity = (type, details = {}) => {
+    creativeEvents.push({
+      time: new Date().toISOString(),
+      type,
+      details,
+      page: currentPage,
+    });
+    console.log("🎨 Creative pulse:", type, details);
+  };
+
+  const saveSession = () => {
+    const duration = ((Date.now() - sessionStart) / 1000).toFixed(2);
+    const summary = { duration, creativeEvents };
+    localStorage.setItem("creative_session", JSON.stringify(summary, null, 2));
+    console.log("✨ Session saved:", summary);
+  };
+
+  // First page view
+  const trackPageView = () => logActivity("view", { page: location.pathname });
+
+  // Handle navigation in SPAs
+  const onUrlChange = () => {
+    currentPage = location.pathname;
+    setTimeout(trackPageView, 150);
+  };
+
+  const originalPush = history.pushState;
+  const originalReplace = history.replaceState;
+
+  history.pushState = function () {
+    originalPush.apply(this, arguments);
+    onUrlChange();
+  };
+  history.replaceState = function () {
+    originalReplace.apply(this, arguments);
+    onUrlChange();
+  };
+
+  window.addEventListener("popstate", onUrlChange);
+  window.addEventListener("beforeunload", saveSession);
+
+  // Initial activation
+  trackPageView();
+})();
+
+})();

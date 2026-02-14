@@ -1,0 +1,16 @@
+/* custom-overrides.css
+   Loaded after index-DzWrDgnG.css to safely tweak styles without touching generated assets.
+   Tip: Prefer specificity or !important sparingly to override Tailwind utilities. */
+
+/* Example: make H1 visibly red to confirm this file is active (remove when done). */
+h1 { color: #d00 !important; }
+
+/* Example: tweak a button class if needed
+.button-primary { background-color: #d00 !important; border-color: #b00 !important; }
+*/
+
+/* If the app uses CSS variables for themes, you can override them here.
+:root {
+  --primary: #d00;
+}
+*/
