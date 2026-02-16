@@ -9,99 +9,132 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .container {
-      max-width: 800px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 60px 40px;
-      text-align: center;
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-    }
-    h1 {
-      font-size: 3em;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-    .subtitle {
-      font-size: 1.3em;
-      margin-bottom: 40px;
-      opacity: 0.9;
-    }
-    .links {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 40px;
-    }
-    .btn {
-      display: inline-block;
-      padding: 15px 35px;
-      background: #fff;
-      color: #667eea;
-      text-decoration: none;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.1em;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px 0 rgba(255, 255, 255, 0.3);
-    }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px 0 rgba(255, 255, 255, 0.4);
-    }
-    .btn.secondary {
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      border: 2px solid #fff;
-    }
-    .emoji {
-      font-size: 1.5em;
-      margin-right: 8px;
-    }
-    .info {
-      margin-top: 50px;
-      padding-top: 30px;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      opacity: 0.8;
-      font-size: 0.9em;
-      line-height: 1.6;
-    }
-  </style>
+    }<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+</style>
 </head>
-<body>
+
+    <body>
   <div class="container">
-    <h1>🌿 Welcome to the AI Clearinghouse</h1>
-    <p class="subtitle">Where collaboration blooms and innovation grows</p>
-    
-    <div class="links">
-      <a href="/rosies-garden" class="btn">
-        <span class="emoji">🌹</span>
-        Enter Rosie's Garden
-      </a>
-      <a href="/hub" class="btn secondary">
-        <span class="emoji">🏛️</span>
-        Visit the Hub
-      </a>
+    <h1>AI Clearinghouse</h1>
+    <div class="subtitle">A calm place to explore AI tools — safely.</div>
+
+    <div class="notice">
+      <strong>Safety first</strong>
+      <ul>
+        <li>Don’t paste passwords, IDs, or private medical/legal info.</li>
+        <li>Verify important claims. AI can be confidently wrong.</li>
+        <li>Start with small, reversible tasks (drafts, summaries, checklists).</li>
+      </ul>
     </div>
-    
-    <div class="info">
-      <p><strong>Rosie's Garden</strong> — A curated space for AI experimentation and growth</p>
-      <p><strong>The Hub</strong> — Central command for the AI Clearinghouse ecosystem</p>
+
+    <div class="filters">
+      <button class="pill active" data-cat="all">All</button>
+      <button class="pill" data-cat="writing">Writing</button>
+      <button class="pill" data-cat="images">Images</button>
+      <button class="pill" data-cat="productivity">Productivity</button>
+      <button class="pill" data-cat="learning">Learning</button>
+    </div>
+
+    <div id="toolGrid" class="grid"></div>
+
+    <div class="footer">
+      <span style="opacity:.7">No chat required.</span>
     </div>
   </div>
+
+  <script>
+    const TOOLS = [
+      { name: "ChatGPT", cat: "writing", cost: "Free/Low", note: "Drafts, rewrites, summaries." },
+      { name: "Claude", cat: "writing", cost: "Free/Low", note: "Long-form writing + reasoning." },
+      { name: "Perplexity", cat: "learning", cost: "Free/Low", note: "Search-style answers + sources." },
+      { name: "Canva AI", cat: "images", cost: "Free/Low", note: "Design + quick visuals." },
+      { name: "Notion AI", cat: "productivity", cost: "Low", note: "Docs + notes assistance." }
+    ];
+
+    const grid = document.getElementById("toolGrid");
+    const pills = Array.from(document.querySelectorAll(".pill"));
+
+    function render(cat) {
+      const list = (cat === "all") ? TOOLS : TOOLS.filter(t => t.cat === cat);
+      grid.innerHTML = list.map(t => `
+        <div class="card">
+          <div class="row">
+            <strong>${t.name}</strong>
+            <span class="cost">${t.cost}</span>
+          </div>
+          <div class="meta">${t.cat.toUpperCase()}</div>
+          <div class="note">${t.note}</div>
+        </div>
+      `).join("");
+    }
+
+    pills.forEach(btn => {
+      btn.addEventListener("click", () => {
+        pills.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        render(btn.dataset.cat);
+      });
+    });
+
+    render("all");
+  </script>
+
+  <style>
+    .notice{
+      text-align:left;
+      margin: 18px 0 16px;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .filters{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin: 14px 0 10px;
+    }
+    .pill{
+      cursor:pointer;
+      border-radius: 999px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(0,0,0,0.15);
+      color:#fff;
+      font-weight: 600;
+    }
+    .pill.active{
+      border-color: rgba(255,255,255,0.45);
+      background: rgba(255,255,255,0.18);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+      text-align:left;
+    }
+    .card{
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      align-items:baseline;
+    }
+    .cost{ opacity: 0.8; font-size: 0.95em; }
+    .meta{ opacity: 0.7; margin-top: 6px; font-size: 0.85em; }
+    .note{ opacity: 0.9; margin-top: 10px; line-height: 1.35; }
+    .footer{ margin-top: 18px; font-size: 0.9em; }
+  </style>
 </body>
-</html>
