@@ -270,6 +270,10 @@ export default async function handler(req, res) {
         );
       } catch (err) {
         const errorResponse = handleOpenAIError(err);
+        // Log the streaming error
+        await appendWorkspaceLog(
+          `Streaming error for ${userLabel}: ${errorResponse.error}`
+        );
         res.write(`data: ${JSON.stringify({ error: errorResponse.error })}\n\n`);
         res.end();
       }
