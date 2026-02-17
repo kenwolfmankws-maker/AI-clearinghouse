@@ -15,7 +15,6 @@ Your responsibility is to:
 ## Current Architecture State
 **Active Production Components:**
 - Root (`/`) → AI Clearinghouse Entry Portal (index.html)
-- `/porch` → Cosmic Cowboy Porch (porch/index.html)
 - `/api/chat` → OpenAI chat endpoint (api/chat.js)
 - `/public/*` → Legacy local dev files (deprecated)
 
