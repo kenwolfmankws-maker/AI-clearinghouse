@@ -1,1 +1,14 @@
-{\n  "rewrites": [\n    {\n      "source": "/hub",\n      "destination": "/hub/index.html"\n    },\n    {\n      "source": "/porch",\n      "destination": "/porch/index.html"\n    }\n  ]\n}
+{"version": 2,
+ "name": "My Project",
+ "regions": ["iad1"],
+ "buildCommand": "npm run build",
+ "framework": "next",
+ "installCommand": "npm install",
+ "headers": [],
+ "cleanUrls": true,
+ "trailingSlash": false,
+ "rewrites": [
+ {"source": "/porch", "destination": "/porch/index.html"},
+ {"source": "/hub", "destination": "/AI Clearinghouse Hub.html"}
+ ]
+}
