@@ -1,1 +1,189 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>AI Clearinghouse</title>\n    <style>\n        /* Your CSS styles here */\n        body {\n            font-family: Arial, sans-serif;\n            background-color: #f4f4f4;\n        }\n    </style>\n</head>\n<body>\n    <h1>Welcome to the AI Clearinghouse</h1>\n    <p>This platform provides resources and tools for AI enthusiasts.</p>\n    <footer>\n        <p>&copy; 2026 AI Clearinghouse</p>\n    </footer>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Clearinghouse</title>
+  <meta name="description" content="For cautious first-timers: browse quietly, no pressure. A curated shelf of free and low-cost tools, explained in plain English." />
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: rgba(255, 255, 255, 0.06);
+      --text: #e8eefc;
+      --muted: rgba(232, 238, 252, 0.75);
+      --border: rgba(232, 238, 252, 0.18);
+      --link: #9cc3ff;
+      --linkHover: #cfe0ff;
+      --btn: #1a2a4a;
+      --btnHover: #223760;
+      --focus: rgba(156, 195, 255, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 10%, rgba(156,195,255,0.18), transparent 60%),
+                  radial-gradient(900px 500px at 80% 20%, rgba(122,233,201,0.10), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { color: var(--linkHover); text-decoration: underline; }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 48px 18px 64px;
+    }
+
+    header {
+      padding: 18px 18px 22px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin: 0 0 6px 0;
+      font-size: 34px;
+      letter-spacing: 0.2px;
+    }
+
+    .sub {
+      margin: 0 0 14px 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--text);
+      max-width: 78ch;
+      font-size: 16px;
+    }
+
+    nav.quick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--btn);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .btn:hover { background: var(--btnHover); text-decoration: none; }
+    .btn:focus { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+    .grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      grid-column: span 6;
+      padding: 16px 16px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+    }
+
+    .card h2 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer {
+      margin-top: 22px;
+      padding: 14px 6px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 720px) {
+      h1 { font-size: 28px; }
+      .card { grid-column: span 12; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>AI Clearinghouse</h1>
+      <p class="sub">For cautious first-timers • browse quietly • no pressure</p>
+      <p class="lead">
+        If AI makes you uneasy, you’re in the right place. This is a curated shelf of free and low-cost tools, explained in plain English.
+        You can browse without chatting. You’re in control.
+      </p>
+
+      <nav class="quick" aria-label="Primary actions">
+        <a class="btn" href="#browse">Browse tools</a>
+        <a class="btn" href="#safety">Start with safety</a>
+        <a class="btn" href="/porch">Talk to Eldon (optional)</a>
+        <a class="btn" href="/porch">Looking for the deeper corridor? Sanctuary</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="browse" class="grid" aria-label="Pick a safe starting point">
+        <div class="card">
+          <h2>Pick a safe starting point</h2>
+          <p>Start small. Keep control. Treat outputs as drafts.</p>
+        </div>
+
+        <div class="card">
+          <h2>Writing help</h2>
+          <p>Draft emails, summaries, ideas—low risk, easy to test.</p>
+        </div>
+
+        <div class="card">
+          <h2>Images</h2>
+          <p>Generate graphics and edits—clear boundaries, clear results.</p>
+        </div>
+
+        <div class="card">
+          <h2>Productivity</h2>
+          <p>Notes, checklists, schedules—practical, boring, useful.</p>
+        </div>
+
+        <div class="card">
+          <h2>Learning</h2>
+          <p>Ask questions, get explanations—verify sources, stay grounded.</p>
+        </div>
+
+        <div class="card" id="safety">
+          <h2>We don’t force chat.</h2>
+          <p>We don’t pretend AI is magic. We help you try it safely.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 AI Clearinghouse</p>
+    </footer>
+  </div>
+</body>
+</html>     
