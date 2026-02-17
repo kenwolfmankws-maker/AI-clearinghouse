@@ -1,14 +1,30 @@
-{"version": 2,
- "name": "My Project",
- "regions": ["iad1"],
- "buildCommand": "npm run build",
- "framework": "next",
- "installCommand": "npm install",
- "headers": [],
- "cleanUrls": true,
- "trailingSlash": false,
- "rewrites": [
- {"source": "/porch", "destination": "/porch/index.html"},
- {"source": "/hub", "destination": "/AI Clearinghouse Hub.html"}
- ]
+{
+  "version": 2,
+  "name": "ai-clearinghouse",
+  "regions": ["iad1"],
+  "buildCommand": "echo 'No build needed - static files'",
+  "framework": null,
+  "installCommand": "npm install --omit=dev",
+  "rewrites": [
+    { "source": "/porch", "destination": "/porch/index.html" },
+    { "source": "/hub", "destination": "/AI Clearinghouse Hub.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(js|css|webp|png|jpg|jpeg|gif|svg|ico|json|download)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
