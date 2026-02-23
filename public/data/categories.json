@@ -1,0 +1,22 @@
+[
+  {
+    "id": "writing",
+    "name": "Writing Help",
+    "description": "Draft emails, summaries, ideas — low risk, easy to test."
+  },
+  {
+    "id": "images",
+    "name": "Images",
+    "description": "Generate graphics and edits — clear boundaries, clear results."
+  },
+  {
+    "id": "productivity",
+    "name": "Productivity",
+    "description": "Notes, checklists, schedules — practical, boring, useful."
+  },
+  {
+    "id": "learning",
+    "name": "Learning",
+    "description": "Ask questions, verify sources, stay grounded."
+  }
+]
