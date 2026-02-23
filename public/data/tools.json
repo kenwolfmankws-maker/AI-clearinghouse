@@ -1,0 +1,30 @@
+[
+  {
+    "name": "ChatGPT",
+    "category": "writing",
+    "description": "General writing, summaries, brainstorming.",
+    "website": "https://chat.openai.com",
+    "pricing": "Free tier available"
+  },
+  {
+    "name": "Claude",
+    "category": "writing",
+    "description": "Long-form writing and structured reasoning.",
+    "website": "https://claude.ai",
+    "pricing": "Free tier available"
+  },
+  {
+    "name": "DALL·E",
+    "category": "images",
+    "description": "Generate images from text prompts.",
+    "website": "https://openai.com/dall-e",
+    "pricing": "Paid / limited free"
+  },
+  {
+    "name": "Notion AI",
+    "category": "productivity",
+    "description": "AI-assisted notes and document drafting.",
+    "website": "https://notion.so",
+    "pricing": "Paid"
+  }
+]
