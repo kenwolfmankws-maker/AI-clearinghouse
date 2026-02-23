@@ -1,10 +1,11 @@
 {
   "name": "AI Clearinghouse",
   "short_name": "Clearinghouse",
+  "description": "A calm, neutral directory of AI tools explained in plain English.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#111111",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
   "icons": [
     {
       "src": "/icons/icon-192.png",
