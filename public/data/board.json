@@ -1,0 +1,35 @@
+{
+  "title": "AI Clearinghouse",
+  "subtitle": "For cautious first-timers • browse quietly • no pressure",
+  "intro": "If AI makes you uneasy, you're in the right place. This is a curated shelf of free and low-cost tools, explained in plain English. You can browse without chatting. You're in control.",
+  "choices": [
+    {
+      "id": "browse",
+      "label": "Browse tools",
+      "description": "See categories and tools.",
+      "action": "scroll",
+      "target": "#directory-container"
+    },
+    {
+      "id": "safety",
+      "label": "Start with safety",
+      "description": "Safe starting rules + low-risk recommendations.",
+      "action": "nav",
+      "target": "/safety.html"
+    },
+    {
+      "id": "talk",
+      "label": "Talk to Eldon (optional)",
+      "description": "Guided help without pressure.",
+      "action": "nav",
+      "target": "/eldon.html"
+    },
+    {
+      "id": "sanctuary",
+      "label": "Looking for the deeper corridor? Sanctuary",
+      "description": "Leave the Clearinghouse and enter Sanctuary.",
+      "action": "nav",
+      "target": "/porch/"
+    }
+  ]
+}
