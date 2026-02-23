@@ -67,6 +67,54 @@ async function loadDirectory() {
 
 loadDirectory();
 </script>
+async function loadBoard() {
+  const board = await fetch('/data/board.json').then(r => r.json());
+
+  const container = document.querySelector('#board-container');
+  if (!container) return;
+
+  // Minimal, layout-agnostic board renderer
+  const wrap = document.createElement('div');
+  wrap.className = 'board';
+
+  wrap.innerHTML = `
+    <div class="board-hero">
+      <h1>${board.title ?? ''}</h1>
+      <p class="board-subtitle">${board.subtitle ?? ''}</p>
+      <p class="board-intro">${board.intro ?? ''}</p>
+      <div class="board-actions"></div>
+    </div>
+  `;
+
+  const actions = wrap.querySelector('.board-actions');
+
+  (board.choices ?? []).forEach(choice => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'board-btn';
+    btn.textContent = choice.label;
+
+    btn.addEventListener('click', () => {
+      if (choice.action === 'nav' && choice.target) {
+        window.location.href = choice.target;
+        return;
+      }
+      if (choice.action === 'scroll' && choice.target) {
+        const el = document.querySelector(choice.target);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+    });
+
+    actions.appendChild(btn);
+  });
+
+  container.innerHTML = '';
+  container.appendChild(wrap);
+}
+
+loadBoard();
+</script>
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
