@@ -8,7 +8,19 @@ body {
     height: 100vh;
     overflow: hidden;
     position: relative;
+}.board-hero { margin-bottom: 18px; }
+.board-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+.board-btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: inherit;
+  cursor: pointer;
 }
+.board-btn:hover { background: rgba(255,255,255,0.10); }
+.board-subtitle { opacity: 0.9; margin-top: 6px; }
+.board-intro { opacity: 0.95; margin-top: 10px; max-width: 70ch; }
 
 /* ========= STARFIELD ========= */
 .star {
@@ -27,17 +39,7 @@ body {
     to   { transform: translateY(-1500px); }
 }
 
-/* ========= PORCH FRAME ========= */
-.porch-frame {
-    width: 600px;
-    background: rgba(20, 20, 30, 0.75);
-    border: 2px solid #3beaff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 0 25px #00baff;
-    position: relative;
-    z-index: 2; /* Above the stars */
-}
+
 
 /* ========= TITLE ========= */
 .title {
