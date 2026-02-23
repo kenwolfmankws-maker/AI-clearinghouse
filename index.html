@@ -9,9 +9,9 @@
     :root {
       --bg: #0b1220;
       --panel: rgba(255, 255, 255, 0.06);
-      --text: #e8eefc;
-      --muted: rgba(232, 238, 252, 0.75);
-      --border: rgba(232, 238, 252, 0.18);
+      --text: #e9eef7;
+      --muted: rgba(233, 238, 247, 0.75);
+      --border: rgba(233, 238, 247, 0.18);
       --link: #9cc3ff;
       --linkHover: #cfe0ff;
       --btn: #1a2a4a;
@@ -20,101 +20,7 @@
     }
 
     * { box-sizing: border-box; }
-<script>
-async function loadDirectory() {
-  const categories = await fetch('/data/categories.json').then(r => r.json());
-  const tools = await fetch('/data/tools.json').then(r => r.json());
 
-  const container = document.querySelector('#directory-container');
-  if (!container) return;
-
-  container.innerHTML = '';
-
-  categories.forEach(category => {
-    const categoryBlock = document.createElement('div');
-    categoryBlock.style.marginBottom = '40px';
-
-    const title = document.createElement('h2');
-    title.textContent = category.name;
-    categoryBlock.appendChild(title);
-
-    const desc = document.createElement('p');
-    desc.textContent = category.description;
-    categoryBlock.appendChild(desc);
-
-    const toolList = tools.filter(t => t.category === category.id);
-
-    toolList.forEach(tool => {
-      const toolCard = document.createElement('div');
-      toolCard.style.padding = '12px';
-      toolCard.style.margin = '10px 0';
-      toolCard.style.border = '1px solid rgba(255,255,255,0.1)';
-      toolCard.style.borderRadius = '8px';
-
-      toolCard.innerHTML = `
-        <strong>${tool.name}</strong><br>
-        ${tool.description}<br>
-        <small>${tool.pricing}</small><br>
-        <a href="${tool.website}" target="_blank">Visit</a>
-      `;
-
-      categoryBlock.appendChild(toolCard);
-    });
-
-    container.appendChild(categoryBlock);
-  });
-}
-
-loadDirectory();
-</script>
-async function loadBoard() {
-  const board = await fetch('/data/board.json').then(r => r.json());
-
-  const container = document.querySelector('#board-container');
-  if (!container) return;
-
-  // Minimal, layout-agnostic board renderer
-  const wrap = document.createElement('div');
-  wrap.className = 'board';
-
-  wrap.innerHTML = `
-    <div class="board-hero">
-      <h1>${board.title ?? ''}</h1>
-      <p class="board-subtitle">${board.subtitle ?? ''}</p>
-      <p class="board-intro">${board.intro ?? ''}</p>
-      <div class="board-actions"></div>
-    </div>
-  `;
-
-  const actions = wrap.querySelector('.board-actions');
-
-  (board.choices ?? []).forEach(choice => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'board-btn';
-    btn.textContent = choice.label;
-
-    btn.addEventListener('click', () => {
-      if (choice.action === 'nav' && choice.target) {
-        window.location.href = choice.target;
-        return;
-      }
-      if (choice.action === 'scroll' && choice.target) {
-        const el = document.querySelector(choice.target);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        return;
-      }
-    });
-
-    actions.appendChild(btn);
-  });
-
-  container.innerHTML = '';
-  container.appendChild(wrap);
-}
-
-loadBoard();
-</script>
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -220,7 +126,130 @@ loadBoard();
       h1 { font-size: 28px; }
       .card { grid-column: span 12; }
     }
+
+    /* ── Dark theme enforcement (high-specificity overrides) ── */
+    html body {
+      background-color: #0b1220 !important;
+      color: #e9eef7 !important;
+    }
+
+    html body header,
+    html body .card,
+    html body section > div {
+      background: rgba(11, 18, 32, 0.75) !important;
+      color: #e9eef7 !important;
+    }
   </style>
+  <script>
+async function loadDirectory() {
+  const categories = await fetch('/data/categories.json').then(r => r.json());
+  const tools = await fetch('/data/tools.json').then(r => r.json());
+
+  const container = document.querySelector('#directory-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  categories.forEach(category => {
+    const categoryBlock = document.createElement('div');
+    categoryBlock.style.marginBottom = '40px';
+
+    const title = document.createElement('h2');
+    title.textContent = category.name;
+    categoryBlock.appendChild(title);
+
+    const desc = document.createElement('p');
+    desc.textContent = category.description;
+    categoryBlock.appendChild(desc);
+
+    const toolList = tools.filter(t => t.category === category.id);
+
+    toolList.forEach(tool => {
+      const toolCard = document.createElement('div');
+      toolCard.style.padding = '12px';
+      toolCard.style.margin = '10px 0';
+      toolCard.style.border = '1px solid rgba(255,255,255,0.1)';
+      toolCard.style.borderRadius = '8px';
+
+      const name = document.createElement('strong');
+      name.textContent = tool.name;
+      const br1 = document.createElement('br');
+      const descNode = document.createTextNode(tool.description);
+      const br2 = document.createElement('br');
+      const pricing = document.createElement('small');
+      pricing.textContent = tool.pricing;
+      const br3 = document.createElement('br');
+      const link = document.createElement('a');
+      link.href = tool.website;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = 'Visit';
+      toolCard.append(name, br1, descNode, br2, pricing, br3, link);
+
+      categoryBlock.appendChild(toolCard);
+    });
+
+    container.appendChild(categoryBlock);
+  });
+}
+
+loadDirectory();
+  </script>
+  <script>
+async function loadBoard() {
+  const board = await fetch('/data/board.json').then(r => r.json());
+
+  const container = document.querySelector('#board-container');
+  if (!container) return;
+
+  // Minimal, layout-agnostic board renderer
+  const wrap = document.createElement('div');
+  wrap.className = 'board';
+
+  const hero = document.createElement('div');
+  hero.className = 'board-hero';
+
+  const h1 = document.createElement('h1');
+  h1.textContent = board.title ?? '';
+  const subtitle = document.createElement('p');
+  subtitle.className = 'board-subtitle';
+  subtitle.textContent = board.subtitle ?? '';
+  const intro = document.createElement('p');
+  intro.className = 'board-intro';
+  intro.textContent = board.intro ?? '';
+  const actions = document.createElement('div');
+  actions.className = 'board-actions';
+
+  hero.append(h1, subtitle, intro, actions);
+  wrap.appendChild(hero);
+
+  (board.choices ?? []).forEach(choice => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'board-btn';
+    btn.textContent = choice.label;
+
+    btn.addEventListener('click', () => {
+      if (choice.action === 'nav' && choice.target) {
+        window.location.href = choice.target;
+        return;
+      }
+      if (choice.action === 'scroll' && choice.target) {
+        const el = document.querySelector(choice.target);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+    });
+
+    actions.appendChild(btn);
+  });
+
+  container.innerHTML = '';
+  container.appendChild(wrap);
+}
+
+loadBoard();
+  </script>
 </head>
 
 <body>
