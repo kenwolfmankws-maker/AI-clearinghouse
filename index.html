@@ -20,7 +20,53 @@
     }
 
     * { box-sizing: border-box; }
+<script>
+async function loadDirectory() {
+  const categories = await fetch('/data/categories.json').then(r => r.json());
+  const tools = await fetch('/data/tools.json').then(r => r.json());
 
+  const container = document.querySelector('#directory-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  categories.forEach(category => {
+    const categoryBlock = document.createElement('div');
+    categoryBlock.style.marginBottom = '40px';
+
+    const title = document.createElement('h2');
+    title.textContent = category.name;
+    categoryBlock.appendChild(title);
+
+    const desc = document.createElement('p');
+    desc.textContent = category.description;
+    categoryBlock.appendChild(desc);
+
+    const toolList = tools.filter(t => t.category === category.id);
+
+    toolList.forEach(tool => {
+      const toolCard = document.createElement('div');
+      toolCard.style.padding = '12px';
+      toolCard.style.margin = '10px 0';
+      toolCard.style.border = '1px solid rgba(255,255,255,0.1)';
+      toolCard.style.borderRadius = '8px';
+
+      toolCard.innerHTML = `
+        <strong>${tool.name}</strong><br>
+        ${tool.description}<br>
+        <small>${tool.pricing}</small><br>
+        <a href="${tool.website}" target="_blank">Visit</a>
+      `;
+
+      categoryBlock.appendChild(toolCard);
+    });
+
+    container.appendChild(categoryBlock);
+  });
+}
+
+loadDirectory();
+</script>
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
