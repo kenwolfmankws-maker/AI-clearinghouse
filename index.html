@@ -127,6 +127,19 @@
       .card { grid-column: span 12; }
     }
   </style>
+  <script>
+    (function () {
+      var original = null;
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+          if (original === null) { original = document.title; }
+          document.title = "\uD83D\uDC4B Come to this window!";
+        } else if (original !== null) {
+          document.title = original;
+        }
+      });
+    })();
+  </script>
 </head>
 
 <body>
