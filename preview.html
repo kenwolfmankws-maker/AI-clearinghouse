@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Clearinghouse Hub – Preview</title>
+    <!-- Inline favicon to avoid 404s and make the tab identifiable -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' ry='8' fill='%2300aa66'/%3E%3Ctext x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='36' fill='white'%3EA%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="index-DzWrDgnG.css" />
+  <!-- Optional: local overrides loaded after the main bundle CSS -->
+  <link rel="stylesheet" href="custom-overrides.css" />
+    <style>
+      /* Minimal frame in case the app expects #root */
+      html, body, #root { height: 100%; }
+      body { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Some builds mount to #app instead of #root; include as a passive fallback. -->
+    <div id="app"></div>
+
+  <!-- Ensure SITE_ID resolved very early -->
+    <script src="site-id-bootstrap.js?v=3"></script>
+  <!-- Optional runtime env for Supabase URL/anon key (from query/localStorage) -->
+  <script src="app-env.js?v=1"></script>
+    <!-- Load the overlay/logger first so it can capture loader/app events -->
+    <script src="creative-tracker.js?v=2"></script>
+    <!-- Load events SDK and app bundle via the resilient loader -->
+    <script src="module-loader.js?v=2"></script>
+
+    <!-- Optional: call a global initializeApp(site) if the app provides one -->
+    <script>
+      (function initWhenReady(){
+        const params = new URLSearchParams(location.search);
+        const site = params.get('site') || 'default-site';
+        let tries = 0;
+        function tick(){
+          if (typeof window.initializeApp === 'function') {
+            try { window.initializeApp(site); } catch(e) { console.warn('[preview] initializeApp threw:', e); }
+          } else if (tries++ < 30) {
+            setTimeout(tick, 200);
+          }
+        }
+        tick();
+      })();
+    </script>
+  </body>
+  </html>

@@ -1,159 +1,163 @@
-# AI-clearinghouse
+# 🤖 AI Clearinghouse - AI Model Comparison Platform
 
-Minimal Node.js workspace with an OpenAI chat runner and a GitHub Actions workflow that records entries in three formats:
+A comprehensive platform for discovering, comparing, and tracking AI models. Perfect for affiliate marketing on social media!
 
-- Aggregate text log: `workspace/log.txt`
-- Daily rotated logs: `workspace/logs/YYYY-MM-DD.log`
-- Structured JSONL stream: `workspace/log.jsonl` (one JSON object per line)
+## 🚀 Quick Start (For Affiliates - No Domain Needed!)
 
-## Setup
+### ⚠️ CRITICAL FIXES NEEDED
 
-- Node 18+
-- Copy `.env.example` to `.env` and set your key:
-  - `OPENAI_API_KEY=sk-your-key-here`
-- Do not commit `.env` (already ignored).
+**Before deploying, you MUST fix these issues:**
 
-### Deployment (Vercel)
+1. **Incomplete Supabase API Key** 
+   - Go to: https://supabase.com/dashboard/project/renuhdmxolunjqjbslga/settings/api
+   - Copy your FULL "anon public" key (~200+ characters)
+   - Create `.env` file and add: `VITE_SUPABASE_ANON_KEY=your_full_key_here`
 
-This repo is configured for Vercel's default serverless routing:
-- API: `api/chat.js` → available at `/api/chat`
-- Static UI: `index.html` at repo root (for production) and legacy `public/index.html` for the local Express server
+2. **Missing Database Tables**
+   - Open Supabase SQL Editor
+   - Run the SQL in `DATABASE_SETUP.sql`
+   - Takes ~30 seconds
 
-To deploy (direct OpenAI):
-1. Push to `main`.
-2. In Vercel → Project → Settings → Environment Variables, add `OPENAI_API_KEY` with your real key (Sensitive; Production + Preview).
-3. Redeploy.
-4. Visit your project URL and test `/api/chat`.
+### 📋 Setup Checklist
 
-To deploy (AI Gateway optional):
-1. Obtain an AI Gateway API key from Vercel.
-2. Add `AI_GATEWAY_API_KEY` (Sensitive; Production + Preview) instead of or alongside `OPENAI_API_KEY`.
-3. (Optional) Set `CHAT_MODEL` (e.g. `openai/gpt-4o-mini`, `anthropic/claude-sonnet-4`).
-4. Redeploy and test.
+- [ ] Fix Supabase key (see `QUICK_FIX_CHECKLIST.md`)
+- [ ] Create database tables (run `DATABASE_SETUP.sql`)
+- [ ] Test locally: `npm install && npm run dev`
+- [ ] Deploy to Vercel (free)
+- [ ] Share your Vercel URL on social media!
 
-Runtime selection:
-- If `AI_GATEWAY_API_KEY` is present the serverless function uses baseURL `https://ai-gateway.vercel.sh/v1` and provider-prefixed model names.
-- Otherwise it falls back to OpenAI with `OPENAI_API_KEY`.
+## 📚 Documentation
 
-OIDC enforcement (optional):
-- Set `REQUIRE_OIDC_FOR_CHAT=true` to require a valid Vercel OIDC Bearer token for `/api/chat`.
-- `/api/protected` always requires a token and returns decoded claims if valid.
+- **`QUICK_FIX_CHECKLIST.md`** - Fix critical issues (START HERE!)
+- **`SETUP_GUIDE.md`** - Complete setup walkthrough
+- **`AFFILIATE_MARKETING_GUIDE.md`** - How to promote on social media
+- **`DATABASE_SETUP.sql`** - Database creation script
 
+## ✨ Features
 
-## Scripts
+- 🔍 Search & filter 100+ AI models
+- 📊 Side-by-side comparison tool
+- ⭐ Save favorites (requires login)
+- 📱 Fully responsive design
+- 🎯 Perfect for social media sharing
+- 🆓 Free to use and deploy
 
-- `npm start` — run `index.js`
-- `npm run chat -- "hello"` — call `GeorgePortal/chat.js`
-- `npm run verify` — quick key check against OpenAI models API
-- `npm run search -- "query" [-- --scope=all|text|jsonl --limit=200]` — local log search (see below)
+## 🛠️ Tech Stack
 
-## Run the workflow manually
+- React + TypeScript
+- Tailwind CSS + shadcn/ui
+- Supabase (auth + database)
+- Vite (build tool)
+- Vercel (hosting)
 
-The workflow `.github/workflows/publish-workspace.yml` is manual (workflow_dispatch).
+## 📱 For Social Media Affiliates
 
-1. Go to the GitHub repo → Actions → "Publish workspace" workflow
-2. Click "Run workflow"
-3. Fill inputs:
-   - `entry`: short text to record (required)
-   - `author`: display name (defaults to "Ken Wolfman Smalley")
-4. The workflow appends a UTC timestamped line to all three log targets and commits them.
+### Why This Works:
+✅ No domain purchase needed
+✅ Free Vercel hosting
+✅ Professional appearance
+✅ Fast loading times
+✅ Mobile-optimized
+✅ Easy to share
 
-### Log Formats
+### Your Vercel URL:
+After deploying, you'll get: `your-app.vercel.app`
 
-| File | Purpose | Example Line |
-|------|---------|--------------|
-| `workspace/log.txt` | Full chronological history | `2025-11-07 18:22:14 UTC — Deployed chat module` |
-| `workspace/logs/2025-11-07.log` | Per-day slice | `2025-11-07 18:22:14 UTC — Deployed chat module` |
-| `workspace/log.jsonl` | Machine-readable | `{"timestamp":"2025-11-07T18:22:14Z","author":"Ken","entry":"Deployed chat module"}` |
+**Share this on:**
+- Facebook posts & groups
+- Instagram bio & stories
+- LinkedIn
+- Twitter/X
+- Reddit (where allowed)
 
-Parse JSONL examples:
+## 🎯 Current Status
 
+### ✅ Working Features:
+- Browse AI models
+- Search functionality
+- Advanced filters
+- Model comparison
+- Responsive design
+
+### ⚠️ Needs Setup:
+- User authentication (fix Supabase key)
+- Favorites system (create database tables)
+- User profiles (create database tables)
+
+### 🔜 Optional (Add Later):
+- Email notifications
+- Custom domain
+- Analytics tracking
+- Affiliate links
+
+## 🚀 Deployment
+
+### Option 1: Vercel (Recommended)
 ```bash
-# Show last 5 entries
-tail -n 5 workspace/log.jsonl | jq '.'
+# Push to GitHub
+git init
+git add .
+git commit -m "Initial commit"
+git push
 
-# Filter for lines mentioning "chat"
-grep -i chat workspace/log.jsonl | jq -r '.timestamp + " " + .entry'
+# Then import to Vercel
+# Add environment variables in Vercel dashboard
 ```
 
-Notes:
-- Workflow has `permissions: contents: write` to push commits
-- Uses a concurrency group to avoid overlapping writes
-- Commits only if a change is detected
-- JSONL lines are produced with `jq -n` to ensure proper escaping
+### Option 2: Other Platforms
+- Netlify
+- Railway
+- Render
+- Any static host
 
-## Search the logs (workflow)
-
-Use `.github/workflows/search-workspace.yml` to search recorded entries.
-
-Inputs:
-- `query` (required): case-insensitive search string
-- `scope` (optional): `all` (default), `text`, or `jsonl`
-
-Outputs:
-- Job Summary includes a markdown view of matched text lines and JSONL rows
-- An artifact `workspace-search-results` with raw outputs (`text.raw`, `jsonl.tsv`)
-
-How to run:
-1. GitHub repo → Actions → "Search workspace" → Run workflow
-2. Enter your query (e.g., `chat`, `deploy`, `george`)
-3. Inspect the run summary and download the artifact for full detail
-
-## Search the logs locally
-
-Quickly search the workspace logs on your machine.
-
-- Text sources scanned:
-  - `workspace/log.txt`
-  - `workspace/logs/**/*.log`
-- JSONL source scanned:
-  - `workspace/log.jsonl` (fields: timestamp, author, entry)
-
-Usage (PowerShell-friendly examples):
-
-- Search everywhere (default scope=all)
-  - `npm run search -- "chat"`
-
-- Only JSONL with a result cap
-  - `npm run search -- "deploy" -- --scope=jsonl --limit=50`
-
-- Only text logs
-  - `npm run search -- "george" -- --scope=text`
-
-Notes:
-- Use the `--` separator before flags when passing options to the script via npm.
-- Matching is case-insensitive. Output shows line matches for text and tab-separated rows for JSONL.
-
-## Troubleshooting
-
-- If `npm run verify` fails, ensure `.env` exists and contains a valid key
-- If gateway mode errors, confirm model is prefixed (e.g. `openai/gpt-4o-mini`) and key set as `AI_GATEWAY_API_KEY`
-
-### Protecting your own API with Vercel OIDC
-
-This repo includes `/api/protected` which validates Vercel-issued OIDC JWTs:
-
-Env vars:
-- `VERCEL_TEAM_SLUG` — your team slug (used for team issuer)
-- `OIDC_AUDIENCE` — the expected audience for your API
-- `OIDC_SUBJECT` (optional) — require a specific subject
-
-Verification rules:
-- Issuer: `https://oidc.vercel.com/<TEAM_SLUG>` if provided, else global `https://oidc.vercel.com`
-- JWKS: `https://oidc.vercel.com/<TEAM_SLUG>/.well-known/jwks` or global JWKS
-- Algorithm: RS256 only; small clock tolerance applied
-
-Call example (after obtaining a Vercel OIDC token in your environment):
+## 🔧 Local Development
 
 ```bash
-curl -H "Authorization: Bearer <token>" https://<your-app>.vercel.app/api/protected
+# Install dependencies
+npm install
+
+# Create .env file (see .env.example)
+cp .env.example .env
+
+# Add your Supabase key to .env
+
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
 ```
-- If pushes from the workflow fail, check branch protections for `main`
-- If JSONL parsing fails, check for manual edits; each line should be valid JSON
 
-## Next Ideas
+## 📊 What's Included
 
-- Upload daily log as artifact
-- Rotate JSONL monthly (e.g. `workspace/log-2025-11.jsonl`)
-- Provide a search workflow (dispatch with a query and return matches)
+- 100+ AI models with detailed info
+- Advanced filtering system
+- Comparison tool (up to 4 models)
+- User authentication
+- Favorites & collections
+- Responsive design
+- Dark theme
 
+## 🆘 Need Help?
+
+1. Check `QUICK_FIX_CHECKLIST.md` for common issues
+2. Read `SETUP_GUIDE.md` for detailed instructions
+3. Review `AFFILIATE_MARKETING_GUIDE.md` for marketing tips
+
+## 📈 Next Steps
+
+1. **Fix critical issues** (Supabase key + database)
+2. **Deploy to Vercel** (get your free URL)
+3. **Test everything** (sign up, favorites, comparison)
+4. **Start sharing** on social media!
+
+## 🎓 Learning Resources
+
+- [Supabase Docs](https://supabase.com/docs)
+- [Vercel Docs](https://vercel.com/docs)
+- [React Docs](https://react.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+
+---
+
+**Ready to launch?** Start with `QUICK_FIX_CHECKLIST.md` → Fix issues → Deploy → Share! 🚀

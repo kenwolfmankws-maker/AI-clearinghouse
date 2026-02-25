@@ -1,33 +1,75 @@
-// Vercel Serverless Function: GET /api/protected
-// Validates Vercel OIDC Bearer token using team or global issuer JWKS
-// Env:
-//   - VERCEL_TEAM_SLUG: your team slug (recommended)
-//   - OIDC_AUDIENCE: the expected audience string
-//   - OIDC_SUBJECT (optional): enforce a specific subject claim
+const { cors } = require('@vercel/functions');
+const { verifyToken } = require('../lib/oidc');
 
-const { verifyOidcFromRequest } = require('../lib/oidc');
+/**
+ * Vercel serverless function for OIDC-protected endpoint
+ * Always requires a valid Vercel OIDC Bearer token
+ * Returns decoded claims if valid
+ */
 
-module.exports = async function handler(req, res) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
+async function handler(req) {
   try {
-    const { claims: payload, issuer: issuerUsed } = await verifyOidcFromRequest(req);
-    return res.status(200).json({
+    // Handle CORS
+    if (req.method === 'OPTIONS') {
+      return cors()(new Response(null, { status: 204 }));
+    }
+    const authHeader = req.headers.get('authorization');
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return cors()(
+        new Response(
+          JSON.stringify({ error: 'Missing or invalid Authorization header' }),
+          { status: 401, headers: { 'Content-Type': 'application/json' } }
+        )
+      );
+    }
+
+    const token = authHeader.substring(7);
+    const { payload, issuerUsed } = await verifyToken(token);
+
+    const response = {
       ok: true,
       issuer: issuerUsed,
-      aud: payload.aud,
-      sub: payload.sub,
-      exp: payload.exp,
-      iat: payload.iat,
-      nbf: payload.nbf,
+      subject: payload.sub,
+      audience: payload.aud,
+      issued_at: payload.iat,
+      expires_at: payload.exp,
       claims: payload,
-    });
+    };
+
+    return cors()(
+      new Response(JSON.stringify(response), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
   } catch (err) {
-    const status = err?.statusCode || 500;
-    if (status >= 500) console.error('[oidc] error', err);
-    return res.status(status).json({ error: status === 401 ? 'Unauthorized' : status === 403 ? 'Forbidden' : 'Internal Server Error', detail: err?.message });
+    const detail = err && (err.message || String(err));
+    return cors()(
+      new Response(
+        JSON.stringify({ ok: false, error: detail }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      )
+    );
+  } catch (outerError) {
+    // Catch any unexpected errors outside the main try-catch
+    console.error('[api/protected] unexpected error:', outerError);
+    return cors()(
+      new Response(
+        JSON.stringify({
+          ok: false,
+          error: outerError?.message || 'Unknown error',
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    );
   }
-};
+}
+
+// Export for Vercel Functions v3
+module.exports = handler;
+
+

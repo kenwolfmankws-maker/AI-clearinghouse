@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "api/chat.js": {
+      "maxDuration": 60
+    },
+    "api/protected.js": {
+      "maxDuration": 10
+    }
+  }
+}
+
