@@ -306,9 +306,97 @@ loadBoard();
       </section>
     </main>
 
+    <section id="signup" aria-label="Stay in the loop" style="margin-top:32px;">
+      <div class="card" style="grid-column:span 12;max-width:520px;">
+        <h2>Stay in the loop</h2>
+        <p style="margin-bottom:14px;">Get notified when new tools, guides, and resources land.</p>
+        <form id="signup-form" novalidate>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <input
+              id="signup-name"
+              name="name"
+              type="text"
+              placeholder="Your name (optional)"
+              autocomplete="name"
+              style="padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--btn);color:var(--text);font-size:15px;"
+            />
+            <input
+              id="signup-email"
+              name="email"
+              type="email"
+              placeholder="Your email address"
+              required
+              autocomplete="email"
+              style="padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--btn);color:var(--text);font-size:15px;"
+            />
+            <button
+              type="submit"
+              class="btn"
+              id="signup-btn"
+              style="align-self:flex-start;padding:10px 22px;"
+            >Notify me</button>
+          </div>
+          <p id="signup-msg" role="status" aria-live="polite" style="margin-top:10px;font-size:14px;display:none;"></p>
+        </form>
+      </div>
+    </section>
+
     <footer>
       <p>&copy; 2026 AI Clearinghouse</p>
     </footer>
   </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById('signup-form');
+      const msg  = document.getElementById('signup-msg');
+      const btn  = document.getElementById('signup-btn');
+
+      if (!form) return;
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        msg.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+
+        const name  = (document.getElementById('signup-name').value  || '').trim();
+        const email = (document.getElementById('signup-email').value || '').trim();
+
+        if (!email) {
+          showMsg('Please enter your email address.', '#f87171');
+          btn.disabled = false;
+          btn.textContent = 'Notify me';
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showMsg(data.message || 'You\'re on the list!', '#4ade80');
+            form.reset();
+          } else {
+            showMsg(data.error || 'Something went wrong. Please try again.', '#f87171');
+          }
+        } catch {
+          showMsg('Could not connect. Please try again later.', '#f87171');
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Notify me';
+      });
+
+      function showMsg(text, color) {
+        msg.textContent = text;
+        msg.style.color = color;
+        msg.style.display = 'block';
+      }
+    })();
+  </script>
 </body>
 </html>     
