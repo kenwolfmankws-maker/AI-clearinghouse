@@ -141,6 +141,68 @@
       background: rgba(11, 18, 32, 0.75) !important;
       color: #e9eef7 !important;
     }
+
+    /* ── Contact form ── */
+    #contact {
+      margin-top: 32px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 16px;
+    }
+
+    #contact h2 {
+      margin: 0 0 16px 0;
+      font-size: 20px;
+    }
+
+    #contact-form .field {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 14px;
+    }
+
+    #contact-form label {
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: var(--muted);
+    }
+
+    #contact-form input,
+    #contact-form textarea {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 15px;
+      padding: 10px 12px;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    #contact-form input:focus,
+    #contact-form textarea:focus {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    #contact-submit {
+      padding: 10px 22px;
+      border: 1px solid var(--border);
+      background: var(--btn);
+      color: var(--text);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #contact-submit:hover:not(:disabled) { background: var(--btnHover); }
+    #contact-submit:disabled { opacity: 0.55; cursor: default; }
+
+    #contact-status { margin-top: 10px; font-size: 14px; min-height: 1.4em; }
+    #contact-status.success { color: #7ae3c9; }
+    #contact-status.error   { color: #ff7a7a; }
   </style>
   <script>
 async function loadDirectory() {
@@ -304,11 +366,74 @@ loadBoard();
           <p>We don’t pretend AI is magic. We help you try it safely.</p>
         </div>
       </section>
+
+      <section id="contact" aria-label="Contact us">
+        <h2>Get in touch</h2>
+        <form id="contact-form" novalidate>
+          <div class="field">
+            <label for="contact-name">Name</label>
+            <input id="contact-name" name="name" type="text" autocomplete="name" required maxlength="100" placeholder="Your name">
+          </div>
+          <div class="field">
+            <label for="contact-email">Email</label>
+            <input id="contact-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com">
+          </div>
+          <div class="field">
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" name="message" required maxlength="2000" rows="5" placeholder="Your message"></textarea>
+          </div>
+          <button type="submit" id="contact-submit">Send message</button>
+          <p id="contact-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
     </main>
 
     <footer>
       <p>&copy; 2026 AI Clearinghouse</p>
     </footer>
   </div>
+
+  <script>
+    (function () {
+      var form = document.getElementById('contact-form');
+      var btn = document.getElementById('contact-submit');
+      var status = document.getElementById('contact-status');
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        btn.disabled = true;
+        status.textContent = 'Sending…';
+        status.className = '';
+
+        var body = {
+          name: form.elements['name'].value,
+          email: form.elements['email'].value,
+          message: form.elements['message'].value,
+        };
+
+        try {
+          var res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          });
+          var data = await res.json();
+          if (res.ok) {
+            status.textContent = 'Message sent! We\'ll be in touch.';
+            status.className = 'success';
+            form.reset();
+          } else {
+            status.textContent = data.error || 'Something went wrong. Please try again.';
+            status.className = 'error';
+          }
+        } catch (err) {
+          status.textContent = 'Network error. Please try again.';
+          status.className = 'error';
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    })();
+  </script>
 </body>
 </html>     
