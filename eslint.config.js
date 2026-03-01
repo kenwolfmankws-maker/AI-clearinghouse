@@ -41,7 +41,7 @@ module.exports = [
     }
   },
   {
-    files: ["api/chat.js"],
+    files: ["api/chat.js", "api/contact.js"],
     languageOptions: {
       sourceType: "module"
     }
