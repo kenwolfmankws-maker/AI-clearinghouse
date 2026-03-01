@@ -1,0 +1,54 @@
+---
+description: Rules for using the Resend email SDK in this project
+---
+
+# Resend Email Integration Rules
+
+## Required: Use the Resend Node.js SDK
+
+Always import and use the official `resend` npm package. Do **not** use `fetch` or any HTTP client to call the Resend REST API directly.
+
+```js
+import { Resend } from 'resend';
+const resend = new Resend(process.env.RESEND_API_KEY);
+```
+
+## Required: Use `process.env.RESEND_API_KEY`
+
+The API key must always be read from the environment variable `RESEND_API_KEY`. Never hardcode the key or any other secret in source files.
+
+## Required: `{ data, error }` destructuring pattern
+
+Every call to `resend.emails.send()` must use the `{ data, error }` destructured result pattern:
+
+```js
+const { data, error } = await resend.emails.send({ ... });
+if (error) {
+  // handle error
+}
+// use data.id on success
+```
+
+## Required: Validate env vars at runtime
+
+Check that `RESEND_API_KEY` (and `CONTACT_TO_EMAIL`) are present before attempting to send. Return a 500 with a generic error message if they are missing — never expose the missing key name in the HTTP response body.
+
+## Required: Input validation and sanitization
+
+All user-supplied fields (name, email, message) must be:
+- Type-checked (strings only)
+- Trimmed and length-capped before use
+- HTML-escaped in any HTML email body
+
+## Prohibited: REST fetch
+
+Do **not** call the Resend API with raw `fetch` / `axios` / `got` etc.:
+
+```js
+// ❌ Forbidden
+await fetch('https://api.resend.com/emails', { ... });
+```
+
+## Prohibited: Hardcoded secrets
+
+Do **not** embed API keys, tokens, or email addresses directly in source files.
