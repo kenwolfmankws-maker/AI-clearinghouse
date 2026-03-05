@@ -10,7 +10,6 @@
   "scripts": {
     "start": "node index.cjs",
     "web": "node local-server.cjs",
-    
     "chat": "node GeorgePortal/chat.cjs",
     "verify": "node scripts/verify-key.cjs",
     "search": "node scripts/search-logs.cjs",
@@ -37,6 +36,7 @@
     "express": "^4.21.2",
     "jose": "^5.9.3",
     "ollama": "^0.6.2",
-    "openai": "^6.9.1"
+    "openai": "^6.9.1",
+    "resend": "^6.9.3"
   }
 }
