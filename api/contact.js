@@ -1,0 +1,79 @@
+// api/contact.js - Contact-form email endpoint (Vercel Serverless, ESM)
+// Email provider: Resend Node.js SDK (https://resend.com/docs/send-with-nodejs)
+// Required env vars:
+//   RESEND_API_KEY   — API key from resend.com dashboard
+//   CONTACT_TO_EMAIL — destination inbox (e.g. "you@example.com")
+
+import { Resend } from "resend";
+
+const MAX_NAME_LEN = 100;
+const MAX_EMAIL_LEN = 254;
+const MAX_MESSAGE_LEN = 2000;
+
+function isValidEmail(str) {
+  return typeof str === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str);
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function sanitize(str, maxLen) {
+  if (typeof str !== "string") return "";
+  return str.trim().slice(0, maxLen);
+}
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  const toEmail = process.env.CONTACT_TO_EMAIL;
+
+  if (!apiKey) {
+    console.error("/api/contact: missing RESEND_API_KEY");
+    return res.status(500).json({ error: "Email service not configured" });
+  }
+  if (!toEmail) {
+    console.error("/api/contact: missing CONTACT_TO_EMAIL");
+    return res.status(500).json({ error: "Email service not configured" });
+  }
+
+  const name = sanitize(req.body?.name, MAX_NAME_LEN);
+  const email = sanitize(req.body?.email, MAX_EMAIL_LEN);
+  const message = sanitize(req.body?.message, MAX_MESSAGE_LEN);
+
+  if (!name) return res.status(400).json({ error: "Name is required" });
+  if (!isValidEmail(email))
+    return res.status(400).json({ error: "Valid email is required" });
+  if (!message) return res.status(400).json({ error: "Message is required" });
+
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeMessage = escapeHtml(message);
+
+  const resend = new Resend(apiKey);
+
+  const { data, error } = await resend.emails.send({
+    from: "AI Clearinghouse <onboarding@resend.dev>",
+    to: [toEmail],
+    reply_to: email,
+    subject: `Contact form: ${name}`,
+    text: `From: ${name} <${email}>\n\n${message}`,
+    html: `<p><strong>From:</strong> ${safeName} &lt;${safeEmail}&gt;</p>
+<p>${safeMessage.replace(/\n/g, "<br>")}</p>`,
+  });
+
+  if (error) {
+    console.error("/api/contact Resend error:", error);
+    return res.status(502).json({ error: "Failed to send message" });
+  }
+
+  return res.status(200).json({ ok: true, id: data.id });
+}
