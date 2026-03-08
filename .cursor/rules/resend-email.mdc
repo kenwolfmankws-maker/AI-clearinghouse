@@ -1,0 +1,63 @@
+---
+description: Resend Node.js SDK — send email only per official guardrails
+globs: "**/*.{ts,tsx,js,jsx}"
+alwaysApply: false
+---
+
+# Send Email with Resend — Guardrails
+
+When writing or reviewing code that sends email with [Resend](https://resend.com/), follow the project guide and these rules.
+
+## Source of truth
+
+Full reference: **docs/RESEND_EMAIL_GUIDE.md** (setup, parameters, React Email, attachments, rate limits, idempotency).
+
+## ALWAYS
+
+1. **API key**: Use env var `RESEND_API_KEY` only. Never hardcode.
+2. **Import**: `import { Resend } from 'resend';` — package is `resend`, not `@resend/node`.
+3. **Await**: `resend.emails.send()` returns a Promise; use `async/await` or `.then()`.
+4. **Error handling**: SDK returns `{ data, error }`. Check `error`; do not use try/catch for normal send failures.
+5. **Production `from`**: Use a verified domain in `from`. Use `onboarding@resend.dev` only for testing.
+6. **Parameters**: Use camelCase (`replyTo`, `scheduledAt`), not snake_case.
+
+## NEVER
+
+1. Do not hardcode API keys.
+2. Do not use try/catch for `resend.emails.send()` errors — use `{ data, error }`.
+3. Do not use snake_case for SDK params (`reply_to`, `scheduled_at`).
+4. Do not send `html`/`text`/`react` together with `template` (mutually exclusive).
+5. Do not import from `@resend/node` or any package other than `resend`.
+6. Do not use `onboarding@resend.dev` as `from` in production.
+
+## Minimal correct usage
+
+```typescript
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const { data, error } = await resend.emails.send({
+  from: 'Your Name <notifications@your-verified-domain.com>',
+  to: ['user@example.com'],
+  subject: 'Subject',
+  html: '<p>Body</p>',
+});
+
+if (error) {
+  console.error(error);
+  return;
+}
+console.log(data); // { id: '...' }
+```
+
+## Verification before suggesting Resend code
+
+1. Import from `resend`?
+2. API key from env (e.g. `process.env.RESEND_API_KEY`)?
+3. `resend.emails.send()` awaited?
+4. `{ data, error }` pattern used?
+5. All parameter names camelCase?
+6. Production: `from` uses verified domain?
+
+If any check fails, revise the solution.

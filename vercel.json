@@ -1,11 +1,7 @@
 {
   "functions": {
-    "api/chat.js": {
-      "maxDuration": 60
-    },
-    "api/protected.js": {
-      "maxDuration": 10
-    }
+    "api/chat.js": {"maxDuration": 60},
+    "api/protected.js": {"maxDuration": 10},
+    "api/send-email.js": {"maxDuration": 10}
   }
 }
-

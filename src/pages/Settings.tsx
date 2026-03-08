@@ -14,6 +14,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import EditConfigLabelModal from '@/components/EditConfigLabelModal';
 import ProfileManager from '@/components/ProfileManager';
 import { APIKeyRotationAnalytics } from '@/components/APIKeyRotationAnalytics';
+import { ResendEmailCard } from '@/components/ResendEmailCard';
 
 
 
@@ -1204,6 +1205,8 @@ Overall Status: ${!urlDiff.hasDiff && !keyDiff.hasDiff ? 'Configurations are ide
           </p>
         </CardContent>
       </Card>
+
+      <ResendEmailCard />
 
       <Card className="mb-6">
         <CardHeader>

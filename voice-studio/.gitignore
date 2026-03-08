@@ -1,0 +1,32 @@
+# Voice Studio .gitignore
+# This directory is local-only and should not be tracked in git
+
+# Local storage and recordings
+recordings/
+*.wav
+*.webm
+*.mp3
+
+# Browser-specific
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Node modules (if ever added)
+node_modules/
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp files
+.env.local
+.env

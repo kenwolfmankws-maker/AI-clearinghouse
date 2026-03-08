@@ -1,0 +1,1319 @@
+/* ============================================================
+   Voice Studio - Professional Narration & Podcast Production
+   Dark Theme, Calm & Professional Design
+   ============================================================ */
+
+/* CSS Variables - Color Palette */
+:root {
+    --vs-bg-primary: #1a1a1a;
+    --vs-bg-secondary: #242424;
+    --vs-bg-tertiary: #2e2e2e;
+    --vs-border: #3a3a3a;
+    --vs-text-primary: #e8e8e8;
+    --vs-text-secondary: #b0b0b0;
+    --vs-text-muted: #808080;
+    
+    --vs-accent-primary: #4a9eff;
+    --vs-accent-secondary: #66bb6a;
+    --vs-accent-warning: #ffa726;
+    --vs-accent-danger: #ef5350;
+    --vs-accent-success: #66bb6a;
+    
+    --vs-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --vs-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    
+    --vs-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --vs-radius: 6px;
+}
+
+/* ============================================================
+   Global Styles
+   ============================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body, #app {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    background-color: var(--vs-bg-primary);
+    color: var(--vs-text-primary);
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+/* ============================================================
+   Container Layout - Three-Column Design
+   ============================================================ */
+
+.voice-studio-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: var(--vs-bg-primary);
+}
+
+.vs-header {
+    background-color: var(--vs-bg-secondary);
+    border-bottom: 1px solid var(--vs-border);
+    padding: 1rem 2rem;
+    box-shadow: var(--vs-shadow);
+    flex-shrink: 0;
+}
+
+.vs-header-content {
+    margin-bottom: 0.5rem;
+}
+
+.vs-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--vs-text-primary);
+    letter-spacing: -0.5px;
+}
+
+.vs-subtitle {
+    font-size: 0.875rem;
+    color: var(--vs-text-secondary);
+    margin-top: 0.25rem;
+}
+
+.vs-header-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vs-main {
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    gap: 1rem;
+    padding: 1rem;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ============================================================
+   Sidebars
+   ============================================================ */
+
+.vs-sidebar {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    border-radius: var(--vs-radius);
+    background-color: var(--vs-bg-secondary);
+}
+
+.vs-sidebar-left {
+    border-right: 1px solid var(--vs-border);
+}
+
+.vs-sidebar-right {
+    border-left: 1px solid var(--vs-border);
+}
+
+.vs-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--vs-border);
+    border-radius: var(--vs-radius);
+    background-color: var(--vs-bg-secondary);
+    overflow: hidden;
+}
+
+.vs-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--vs-bg-tertiary);
+    border-bottom: 1px solid var(--vs-border);
+    flex-shrink: 0;
+}
+
+.vs-panel-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--vs-text-primary);
+}
+
+.vs-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ============================================================
+   Center Content Area
+   ============================================================ */
+
+.vs-center {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    padding: 1rem;
+    background-color: var(--vs-bg-secondary);
+    border-radius: var(--vs-radius);
+    border: 1px solid var(--vs-border);
+}
+
+/* Session Info */
+.vs-session-info {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem;
+    background-color: var(--vs-bg-tertiary);
+    border-radius: var(--vs-radius);
+    border: 1px solid var(--vs-border);
+}
+
+.vs-session-take {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.vs-label {
+    font-size: 0.875rem;
+    color: var(--vs-text-secondary);
+    font-weight: 500;
+}
+
+.vs-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--vs-accent-primary);
+}
+
+/* Recording Controls */
+.vs-recording-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.vs-controls-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.vs-takes-controls {
+    justify-content: flex-end;
+}
+
+/* Recording Status */
+.vs-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: var(--vs-bg-tertiary);
+    border-radius: var(--vs-radius);
+    border: 1px solid var(--vs-border);
+}
+
+.vs-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vs-status-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.vs-status-idle {
+    background-color: var(--vs-text-muted);
+}
+
+.vs-status-recording {
+    background-color: var(--vs-accent-danger);
+    animation: pulse 1s infinite;
+}
+
+.vs-status-paused {
+    background-color: var(--vs-accent-warning);
+}
+
+.vs-status-playing {
+    background-color: var(--vs-accent-primary);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.vs-status-text {
+    font-size: 0.875rem;
+    color: var(--vs-text-secondary);
+    font-weight: 500;
+}
+
+.vs-recording-time {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--vs-accent-primary);
+    font-family: 'Monaco', 'Courier New', monospace;
+}
+
+/* Waveform */
+.vs-waveform-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background-color: var(--vs-bg-tertiary);
+    border: 1px solid var(--vs-border);
+    border-radius: var(--vs-radius);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.vs-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.vs-waveform-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.vs-playback-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background-color: var(--vs-accent-primary);
+    opacity: 0;
+}
+
+.vs-playback-line.active {
+    opacity: 1;
+}
+
+/* Playback Controls */
+.vs-playback-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--vs-bg-tertiary);
+    border-radius: var(--vs-radius);
+    border: 1px solid var(--vs-border);
+}
+
+.vs-playback-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vs-playback-time {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.875rem;
+    color: var(--vs-text-secondary);
+}
+
+.vs-time {
+    font-weight: 600;
+    color: var(--vs-text-primary);
+}
+
+.vs-time-separator {
+    color: var(--vs-text-muted);
+}
+
+.vs-playback-slider-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.vs-playback-settings {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.vs-speed-control,
+.vs-volume-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vs-speed-control label,
+.vs-volume-control label {
+    font-size: 0.875rem;
+    color: var(--vs-text-secondary);
+}
+
+/* Recording Metadata */
+.vs-metadata {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--vs-bg-tertiary);
+    border-radius: var(--vs-radius);
+    border: 1px solid var(--vs-border);
+}
+
+.vs-metadata-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.vs-metadata-label {
+    font-size: 0.75rem;
+    color: var(--vs-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vs-metadata-value {
+    font-size: 0.95rem;
+    color: var(--vs-text-primary);
+    font-weight: 500;
+}
+
+/* Export Options */
+.vs-export-options {
+    padding: 1rem;
+    background-color: var(--vs-bg-tertiary);
+    border-radius: var(--vs-radius);
+    border: 1px solid var(--vs-border);
+}
+
+.vs-export-options h3 {
+    font-size: 0.95rem;
+    color: var(--vs-text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.vs-export-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* ============================================================
+   Buttons & Controls
+   ============================================================ */
+
+.vs-btn {
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: var(--vs-radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--vs-transition);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.vs-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vs-btn-primary {
+    background-color: var(--vs-accent-primary);
+    color: #000;
+}
+
+.vs-btn-primary:hover:not(:disabled) {
+    background-color: #5aa9ff;
+    box-shadow: var(--vs-shadow);
+}
+
+.vs-btn-secondary {
+    background-color: var(--vs-bg-tertiary);
+    color: var(--vs-text-primary);
+    border: 1px solid var(--vs-border);
+}
+
+.vs-btn-secondary:hover:not(:disabled) {
+    background-color: var(--vs-border);
+}
+
+.vs-btn-danger {
+    background-color: var(--vs-accent-danger);
+    color: #fff;
+}
+
+.vs-btn-danger:hover:not(:disabled) {
+    background-color: #f44336;
+    box-shadow: var(--vs-shadow);
+}
+
+.vs-btn-accent {
+    background-color: var(--vs-accent-secondary);
+    color: #000;
+}
+
+.vs-btn-accent:hover:not(:disabled) {
+    background-color: #7ec97a;
+    box-shadow: var(--vs-shadow);
+}
+
+.vs-btn-large {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+    min-width: 150px;
+}
+
+.vs-btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+
+.vs-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background-color: var(--vs-bg-tertiary);
+    border: 1px solid var(--vs-border);
+    color: var(--vs-text-primary);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: var(--vs-transition);
+}
+
+.vs-btn-icon:hover {
+    background-color: var(--vs-border);
+}
+
+.vs-btn-icon:active {
+    transform: scale(0.95);
+}
+
+/* ============================================================
+   Form Controls
+   ============================================================ */
+
+.vs-input,
+.vs-select {
+    padding: 0.625rem 0.875rem;
+    background-color: var(--vs-bg-tertiary);
+    border: 1px solid var(--vs-border);
+    color: var(--vs-text-primary);
+    border-radius: var(--vs-radius);
+    font-size: 0.9rem;
+    transition: var(--vs-transition);
+}
+
+.vs-input:focus,
+.vs-select:focus {
+    outline: none;
+    border-color: var(--vs-accent-primary);
+    box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.1);
+}
+
+.vs-input::placeholder {
+    color: var(--vs-text-muted);
+}
+
+.vs-select-small {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+}
+
+.vs-slider,
+.vs-slider-small {
+    width: 100%;
+    height: 5px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--vs-accent-primary) 0%, var(--vs-border) 0%);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.vs-slider::-webkit-slider-thumb,
+.vs-slider-small::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--vs-accent-primary);
+    cursor: pointer;
+    transition: var(--vs-transition);
+}
+
+.vs-slider::-webkit-slider-thumb:hover,
+.vs-slider-small::-webkit-slider-thumb:hover {
+    width: 16px;
+    height: 16px;
+    box-shadow: var(--vs-shadow);
+}
+
+.vs-slider::-moz-range-thumb,
+.vs-slider-small::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--vs-accent-primary);
+    border: none;
+    cursor: pointer;
+    transition: var(--vs-transition);
+}
+
+.vs-slider::-moz-range-thumb:hover,
+.vs-slider-small::-moz-range-thumb:hover {
+    width: 16px;
+    height: 16px;
+    box-shadow: var(--vs-shadow);
+}
+
+.vs-slider-small {
+    width: 80px;
+}
+
+/* Script Panel */
+.vs-script-editor {
+    flex: 1;
+    padding: 0.75rem;
+    background-color: var(--vs-bg-primary);
+    border: 1px solid var(--vs-border);
+    color: var(--vs-text-primary);
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    border-radius: var(--vs-radius);
+    resize: none;
+    overflow-y: auto;
+}
+
+.vs-script-editor:focus {
+    outline: none;
+    border-color: var(--vs-accent-primary);
+}
+
+.vs-script-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vs-markers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.vs-marker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--vs-bg-primary);
+    border: 1px solid var(--vs-border);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--vs-transition);
+}
+
+.vs-marker:hover {
+    background-color: var(--vs-bg-tertiary);
+    border-color: var(--vs-accent-primary);
+}
+
+.vs-marker-time {
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--vs-accent-primary);
+    min-width: 50px;
+}
+
+.vs-marker-label {
+    flex: 1;
+    padding: 0 0.5rem;
+    color: var(--vs-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vs-marker-delete {
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    font-size: 0.7rem;
+    background: transparent;
+    border: none;
+    color: var(--vs-text-muted);
+    cursor: pointer;
+}
+
+.vs-marker-delete:hover {
+    color: var(--vs-accent-danger);
+}
+
+/* ============================================================
+   Tabs
+   ============================================================ */
+
+.vs-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--vs-border);
+    background-color: var(--vs-bg-tertiary);
+    margin: 0 -1rem 0 -1rem;
+    padding: 0 1rem;
+}
+
+.vs-tab-btn {
+    flex: 1;
+    padding: 0.75rem;
+    background: transparent;
+    border: none;
+    color: var(--vs-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: var(--vs-transition);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vs-tab-btn:hover {
+    color: var(--vs-text-primary);
+}
+
+.vs-tab-active {
+    color: var(--vs-accent-primary);
+    border-bottom-color: var(--vs-accent-primary);
+}
+
+.vs-tab-content {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 1rem;
+}
+
+.vs-tab-content-active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Recording Library */
+.vs-library-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.vs-recordings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.vs-recording-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--vs-bg-primary);
+    border: 1px solid var(--vs-border);
+    border-radius: 4px;
+    transition: var(--vs-transition);
+    cursor: pointer;
+}
+
+.vs-recording-item:hover {
+    border-color: var(--vs-accent-primary);
+    background-color: var(--vs-bg-tertiary);
+}
+
+.vs-recording-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.vs-recording-name {
+    flex: 1;
+    font-weight: 500;
+    color: var(--vs-text-primary);
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vs-recording-favorite {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: var(--vs-transition);
+}
+
+.vs-recording-favorite:hover {
+    opacity: 1;
+}
+
+.vs-recording-favorite.marked {
+    opacity: 1;
+}
+
+.vs-recording-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--vs-text-muted);
+}
+
+.vs-recording-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.vs-recording-meta-label {
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.vs-recording-meta-value {
+    color: var(--vs-text-secondary);
+    font-weight: 500;
+}
+
+.vs-recording-actions {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.vs-recording-action-btn {
+    flex: 1;
+    min-width: 60px;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.7rem;
+    background-color: var(--vs-bg-tertiary);
+    border: 1px solid var(--vs-border);
+    color: var(--vs-text-secondary);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: var(--vs-transition);
+}
+
+.vs-recording-action-btn:hover {
+    background-color: var(--vs-border);
+    color: var(--vs-text-primary);
+}
+
+/* Session Takes/History */
+.vs-takes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.vs-take-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--vs-bg-primary);
+    border: 1px solid var(--vs-border);
+    border-radius: 4px;
+    transition: var(--vs-transition);
+}
+
+.vs-take-item:hover {
+    border-color: var(--vs-accent-primary);
+}
+
+.vs-take-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vs-take-title {
+    font-weight: 600;
+    color: var(--vs-text-primary);
+}
+
+.vs-take-best {
+    font-size: 0.7rem;
+    background-color: var(--vs-accent-secondary);
+    color: #000;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+}
+
+.vs-take-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--vs-text-secondary);
+}
+
+.vs-take-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.vs-take-action-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    background-color: var(--vs-bg-tertiary);
+    border: 1px solid var(--vs-border);
+    color: var(--vs-text-secondary);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: var(--vs-transition);
+}
+
+.vs-take-action-btn:hover {
+    background-color: var(--vs-border);
+    color: var(--vs-text-primary);
+}
+
+/* ============================================================
+   Modal & Overlays
+   ============================================================ */
+
+.vs-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.vs-modal-content {
+    background-color: var(--vs-bg-secondary);
+    border: 1px solid var(--vs-border);
+    border-radius: var(--vs-radius);
+    box-shadow: var(--vs-shadow-lg);
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.vs-modal-content {
+    width: 90%;
+    max-width: 600px;
+}
+
+.vs-modal-small {
+    max-width: 400px;
+}
+
+.vs-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: var(--vs-bg-tertiary);
+    border-bottom: 1px solid var(--vs-border);
+    flex-shrink: 0;
+}
+
+.vs-modal-header h2 {
+    font-size: 1.25rem;
+    color: var(--vs-text-primary);
+}
+
+.vs-modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.vs-project-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vs-project-controls .vs-input {
+    flex: 1;
+}
+
+.vs-projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.vs-project-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--vs-bg-tertiary);
+    border: 1px solid var(--vs-border);
+    border-radius: 4px;
+    transition: var(--vs-transition);
+}
+
+.vs-project-item:hover {
+    border-color: var(--vs-accent-primary);
+}
+
+.vs-project-info {
+    flex: 1;
+}
+
+.vs-project-name {
+    font-weight: 600;
+    color: var(--vs-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.vs-project-meta {
+    font-size: 0.8rem;
+    color: var(--vs-text-muted);
+}
+
+.vs-project-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vs-project-action-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    background-color: var(--vs-bg-secondary);
+    border: 1px solid var(--vs-border);
+    color: var(--vs-text-secondary);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: var(--vs-transition);
+}
+
+.vs-project-action-btn:hover {
+    background-color: var(--vs-border);
+    color: var(--vs-text-primary);
+}
+
+.vs-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.vs-form-group label {
+    font-weight: 500;
+    color: var(--vs-text-primary);
+    font-size: 0.9rem;
+}
+
+.vs-form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.vs-form-actions .vs-btn {
+    flex: 1;
+}
+
+/* ============================================================
+   Toast Notifications
+   ============================================================ */
+
+.vs-toast-container {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 400px;
+}
+
+.vs-toast {
+    padding: 1rem 1.25rem;
+    background-color: var(--vs-bg-secondary);
+    border: 1px solid var(--vs-border);
+    border-left: 3px solid var(--vs-accent-primary);
+    border-radius: var(--vs-radius);
+    color: var(--vs-text-primary);
+    font-size: 0.9rem;
+    box-shadow: var(--vs-shadow-lg);
+    animation: slideInRight 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.vs-toast.success {
+    border-left-color: var(--vs-accent-success);
+}
+
+.vs-toast.error {
+    border-left-color: var(--vs-accent-danger);
+}
+
+.vs-toast.warning {
+    border-left-color: var(--vs-accent-warning);
+}
+
+.vs-toast-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--vs-text-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+}
+
+.vs-toast-close:hover {
+    color: var(--vs-text-primary);
+}
+
+/* ============================================================
+   Scrollbars
+   ============================================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--vs-bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--vs-border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--vs-text-muted);
+}
+
+.vs-empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--vs-text-muted);
+    font-size: 0.9rem;
+}
+
+/* ============================================================
+   Responsive Design
+   ============================================================ */
+
+@media (max-width: 1400px) {
+    .vs-main {
+        grid-template-columns: 250px 1fr 280px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .vs-main {
+        grid-template-columns: 230px 1fr 260px;
+    }
+    
+    .vs-metadata {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 992px) {
+    .vs-main {
+        grid-template-columns: 200px 1fr 240px;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+    
+    .vs-btn-large {
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .vs-main {
+        grid-template-columns: 1fr;
+    }
+    
+    .vs-sidebar {
+        max-height: 40vh;
+    }
+    
+    .vs-center {
+        order: -1;
+    }
+    
+    .vs-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .vs-title {
+        font-size: 1.5rem;
+    }
+    
+    .vs-btn-large {
+        min-width: auto;
+        font-size: 0.9rem;
+        padding: 0.75rem 1.25rem;
+    }
+    
+    .vs-metadata {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .vs-header {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .vs-title {
+        font-size: 1.25rem;
+    }
+    
+    .vs-subtitle {
+        display: none;
+    }
+    
+    .vs-main {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+    
+    .vs-session-info {
+        gap: 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .vs-controls-group {
+        gap: 0.5rem;
+    }
+    
+    .vs-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+    
+    .vs-btn-large {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        min-width: auto;
+    }
+    
+    .vs-waveform-container {
+        height: 150px;
+    }
+    
+    .vs-playback-settings {
+        gap: 1rem;
+        flex-direction: column;
+    }
+    
+    .vs-metadata {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        padding: 0.75rem;
+    }
+    
+    .vs-modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+}
