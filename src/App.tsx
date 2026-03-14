@@ -14,8 +14,6 @@ import { SessionTimeoutWarning } from "@/components/SessionTimeoutWarning";
 import SetupWizard from "@/components/SetupWizard";
 import { hasValidCredentials } from "@/lib/supabase";
 
-
-
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import Collections from "./pages/Collections";
@@ -31,9 +29,6 @@ import Forbidden from "./pages/Forbidden";
 import Settings from "./pages/Settings";
 
 import NotFound from "./pages/NotFound";
-
-
-
 
 const queryClient = new QueryClient();
 
@@ -63,46 +58,40 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <RuntimeConfigProvider>
           <AuthProvider>
+            <NotificationProvider>
+              <FilterProvider>
+                <BulkSelectionProvider>
+                  <TooltipProvider>
+                    <Sonner />
+                    <SessionTimeoutWarning />
 
-          <NotificationProvider>
-            <FilterProvider>
-              <BulkSelectionProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <SessionTimeoutWarning />
-
-                  <BrowserRouter>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/collections" element={<Collections />} />
-                      <Route path="/collections/:shareToken" element={<SharedCollection />} />
-                      <Route path="/analytics" element={<Analytics />} />
-                      <Route path="/organization" element={<Organization />} />
-                      <Route path="/audit-log" element={<AuditLog />} />
-                      <Route path="/verify-email" element={<VerifyEmail />} />
-                      <Route path="/reset-password" element={<ResetPassword />} />
-                      <Route path="/invite/:token" element={<AcceptInvitation />} />
-                      <Route path="/admin/password-reset" element={<PasswordResetAdmin />} />
-                      <Route path="/forbidden" element={<Forbidden />} />
-                      <Route path="*" element={<NotFound />} />
-
-                    </Routes>
-                  </BrowserRouter>
-                </TooltipProvider>
-              </BulkSelectionProvider>
-            </FilterProvider>
-          </NotificationProvider>
+                    <BrowserRouter>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/settings" element={<Settings />} />
+                        <Route path="/collections" element={<Collections />} />
+                        <Route path="/collections/:shareToken" element={<SharedCollection />} />
+                        <Route path="/analytics" element={<Analytics />} />
+                        <Route path="/organization" element={<Organization />} />
+                        <Route path="/audit-log" element={<AuditLog />} />
+                        <Route path="/verify-email" element={<VerifyEmail />} />
+                        <Route path="/reset-password" element={<ResetPassword />} />
+                        <Route path="/invite/:token" element={<AcceptInvitation />} />
+                        <Route path="/admin/password-reset" element={<PasswordResetAdmin />} />
+                        <Route path="/forbidden" element={<Forbidden />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </BulkSelectionProvider>
+              </FilterProvider>
+            </NotificationProvider>
           </AuthProvider>
         </RuntimeConfigProvider>
       </QueryClientProvider>
-
     </ThemeProvider>
   );
 };
-
-
 
 export default App;
