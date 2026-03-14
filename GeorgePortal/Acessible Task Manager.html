@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Task Manager</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="app-header">
+<h1>Task Manager</h1>
+</header>
+<main class="app-main">
+<section aria-labelledby="add-task-heading" class="task-input">
+<h2 id="add-task-heading" class="visually-hidden">Add a task</h2>
+<form id="task-form">
+<label for="task-input">New task</label>
+<input
+type="text"
+id="task-input"
+name="task"
+required
+placeholder="What do you need to do?"
+/>
+<button type="submit">Add</button>
+</form>
+</section>
+<section aria-labelledby="tasks-heading" class="task-list-section">
+<h2 id="tasks-heading">Your Tasks</h2>
+<ul id="task-list" role="list"></ul>
+</section>
+</main>
+<footer class="app-footer">
+<p>Accessible, responsive task manager</p>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
