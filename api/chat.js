@@ -1,51 +1,34 @@
+// api/chat.js — Clean Vercel Serverless Function (ESM)
+
+
+import OpenAI from "openai";
+
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        res.setHeader('Allow', 'POST');
-        return res.status(405).json({ error: 'Method Not Allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
+  try {
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ error: "Missing message" });
     }
 
-    const { message } = req.body || {};
-    if (!message || typeof message !== 'string') {
-        return res.status(400).json({ error: 'Message is required' });
-    }
+    const client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-        return res.status(500).json({ error: 'Missing OPENAI_API_KEY env var' });
-    }
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: message }],
+    });
 
-    try {
-        const completionResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: 'gpt-4o-mini',
-                messages: [
-                    { role: 'system', content: 'You are a helpful AI assistant for AI Clearinghouse.' },
-                    { role: 'user', content: message },
-                ],
-                temperature: 0.7,
-            }),
-        });
+    const reply = completion.choices[0].message.content;
+    return res.status(200).json({ reply });
 
-        if (!completionResponse.ok) {
-            const errorText = await completionResponse.text();
-            throw new Error(`OpenAI API error: ${errorText}`);
-        }
-
-        const completionData = await completionResponse.json();
-        const reply = completionData.choices?.[0]?.message?.content?.trim();
-
-        if (!reply) {
-            throw new Error('No reply returned from OpenAI API');
-        }
-
-        return res.status(200).json({ reply });
-    } catch (error) {
-        console.error('Chat API error:', error);
-        return res.status(500).json({ error: 'Failed to generate response' });
-    }
+  } catch (err) {
+    console.error("API ERROR:", err);
+    return res.status(500).json({ error: "Server Error", detail: err.message });
+  }
 }

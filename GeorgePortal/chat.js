@@ -1,6 +1,7 @@
-// GeorgePortal chat module using OpenAI v6 client and dotenv
-require('dotenv').config();
-const OpenAI = require('openai');
+import dotenv from 'dotenv';
+import OpenAI from 'openai';
+
+dotenv.config();
 
 function getClient() {
   const key = process.env.OPENAI_API_KEY;
@@ -11,7 +12,7 @@ function getClient() {
   return new OpenAI({ apiKey: key });
 }
 
-async function chat(userInput) {
+export async function chat(userInput) {
   const client = getClient();
   const prompt = userInput && userInput.trim() ? userInput : 'Say hello in one short sentence.';
   try {
@@ -28,9 +29,9 @@ async function chat(userInput) {
   }
 }
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const input = process.argv.slice(2).join(' ');
   chat(input);
 }
 
-module.exports = { chat, getClient };
+export { getClient };
