@@ -12,7 +12,7 @@ import { BulkSelectionProvider } from "@/contexts/BulkSelectionContext";
 
 import { SessionTimeoutWarning } from "@/components/SessionTimeoutWarning";
 import SetupWizard from "@/components/SetupWizard";
-import { hasValidCredentials } from "@/lib/supabase";
+
 
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
