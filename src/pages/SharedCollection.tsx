@@ -6,7 +6,7 @@ import { allModels } from '@/data/allModels';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
+// import { useToast } from "@/hooks/use-toast";
 import { Copy, Twitter, Linkedin, ArrowLeft, FolderPlus, Loader2 } from 'lucide-react';
 import ModelCard from '@/components/ModelCard';
 
