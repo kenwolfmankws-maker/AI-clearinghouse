@@ -123,7 +123,7 @@
 .markdown-preview h4,
 .markdown-preview h5,
 .markdown-preview h6 {
-  @apply font-sans font-semibold text-foreground;
+  @apply text-sm font-mono;   
 }
 
 .markdown-preview ul,
