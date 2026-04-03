@@ -14,7 +14,7 @@ export default function SharedCollection() {
   const { shareToken } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { toast } = useToast();
+  // const { toast } = useToast();
   const [collection, setCollection] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [copying, setCopying] = useState(false);
@@ -61,7 +61,7 @@ export default function SharedCollection() {
 
   const copyToMyCollections = async () => {
     if (!user) {
-      toast({ title: 'Login required', description: 'Please login to copy this collection' });
+      // toast({ title: 'Login required', description: 'Please login to copy this...' });
       return;
     }
 
