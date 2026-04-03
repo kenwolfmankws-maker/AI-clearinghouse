@@ -32,10 +32,11 @@ export default function SharedCollection() {
       if (error) throw error;
       setCollection(data.collection);
     } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Collection not found',
-        variant: 'destructive'
+      // toast({
+//   title: 'Error',
+//   description: error.message || 'Collection not found',
+//   variant: 'destructive'
+// });
       });
     } finally {
       setLoading(false);
