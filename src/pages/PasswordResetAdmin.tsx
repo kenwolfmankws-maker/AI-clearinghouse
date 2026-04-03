@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+// import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { PasswordResetStats } from "@/components/PasswordResetStats";
