@@ -110,7 +110,7 @@
 }
 
 .markdown-preview pre {
-  @apply bg-secondary p-4 rounded-md overflow-x-auto;
+ @apply p-4 rounded-md overflow-x-auto;
 }
 
 .markdown-preview code {
