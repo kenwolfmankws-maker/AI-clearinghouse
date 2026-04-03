@@ -78,7 +78,7 @@ export default function SharedCollection() {
       // toast({ title: 'Success!', description: 'Collection copied to your account' });
       navigate('/collections');
     } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      // toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } finally {
       setCopying(false);
     }
