@@ -47,7 +47,7 @@ export default function SharedCollection() {
 
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast({ title: 'Link copied!', description: 'Share link copied to clipboard' });
+    // toast({ title: 'Link copied!', description: 'Share link copied to clipboard' });
   };
 
   const shareTwitter = () => {
@@ -75,7 +75,7 @@ export default function SharedCollection() {
       });
 
       if (error) throw error;
-      toast({ title: 'Success!', description: 'Collection copied to your account' });
+      // toast({ title: 'Success!', description: 'Collection copied to your account' });
       navigate('/collections');
     } catch (error: any) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
