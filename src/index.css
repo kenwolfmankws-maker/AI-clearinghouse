@@ -114,7 +114,7 @@
 }
 
 .markdown-preview code {
-  @apply text-sm font-mono text-primary;
+  @apply text-sm font-mono;
 }
 
 .markdown-preview h1,
