@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Standalone apps that do not belong in this repository
+voice-studio/
