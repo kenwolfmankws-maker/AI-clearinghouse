@@ -37,7 +37,7 @@ export default function SharedCollection() {
 //   description: error.message || 'Collection not found',
 //   variant: 'destructive'
 // });
-      });
+      
     } finally {
       setLoading(false);
     }
