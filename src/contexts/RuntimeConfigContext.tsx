@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { APIUsageTracker } from '@/lib/apiUsageTracker';
+
 
 const RuntimeConfigContext = createContext<RuntimeConfigContextType | undefined>(undefined);
 
@@ -71,13 +71,12 @@ export function RuntimeConfigProvider({ children }: { children: ReactNode }) {
     setConfigState(newConfig);
   };
 
-  const getApiKey = (provider: string, componentName?: string) => {
-    const key = config.apiKeys[provider];
-    if (key && componentName) {
-      APIUsageTracker.trackAccess(provider, componentName);
-    }
-    return key;
-  };
+ const getApiKey = (provider: string, componentName?: string) => {
+  const key = config.apiKeys[provider];
+  return key;
+};
+     
+  
 
   const getFeatureFlag = (flag: string) => config.featureFlags[flag] ?? false;
   const getCustomVar = (name: string) => config.customVars[name];
