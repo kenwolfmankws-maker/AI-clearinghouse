@@ -3,7 +3,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CollectionCard } from '@/components/CollectionCard';
 import { EditCollectionModal } from '@/components/EditCollectionModal';
-import { supabase } from '@/lib/supabase';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Plus, FolderOpen } from 'lucide-react';
