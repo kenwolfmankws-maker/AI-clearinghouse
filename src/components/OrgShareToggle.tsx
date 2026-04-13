@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Building2 } from 'lucide-react';
-import { logAuditEvent } from '@/lib/auditLogger';
-
 
 interface Organization {
   id: string;
@@ -21,7 +18,10 @@ interface OrgShareToggleProps {
   onUpdate: () => void;
 }
 
-export function OrgShareToggle({ itemId, itemType, currentOrgId, userId, onUpdate }: OrgShareToggleProps) {
+export function OrgShareToggle({ currentOrgId, userId }: OrgShareToggleProps) {
+  // Supabase removed: org membership / sharing persistence disabled.
+  // Keep component render-safe and communicate disabled state.
+
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<string | null>(currentOrgId);
   const [isShared, setIsShared] = useState(!!currentOrgId);
@@ -29,76 +29,41 @@ export function OrgShareToggle({ itemId, itemType, currentOrgId, userId, onUpdat
   const { toast } = useToast();
 
   useEffect(() => {
-    loadOrganizations();
+    // Without backend we can't load orgs.
+    // Clear state on user change to avoid stale UI.
+    setOrganizations([]);
+    setSelectedOrg(null);
+    setIsShared(false);
   }, [userId]);
 
-  const loadOrganizations = async () => {
-    const { data } = await supabase
-      .from('organization_members')
-      .select('organization_id, organizations(id, name)')
-      .eq('user_id', userId)
-      .eq('role', 'admin');
-
-    if (data) {
-      const orgs = data.map((m: any) => m.organizations).filter(Boolean);
-      setOrganizations(orgs);
-    }
-  };
-
-  const handleToggle = async (checked: boolean) => {
-    if (!checked) {
-      await updateSharing(null);
+  const handleToggle = async (_checked: boolean) => {
+    setLoading(true);
+    try {
+      toast({
+        title: 'Disabled',
+        description: 'Organization sharing is disabled because database integration was removed.',
+        variant: 'destructive',
+      });
       setIsShared(false);
       setSelectedOrg(null);
-    } else if (organizations.length === 1) {
-      await updateSharing(organizations[0].id);
-      setIsShared(true);
-      setSelectedOrg(organizations[0].id);
-    } else {
-      setIsShared(true);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleOrgSelect = async (orgId: string) => {
-    setSelectedOrg(orgId);
-    await updateSharing(orgId);
+  const handleOrgSelect = async (_orgId: string) => {
+    toast({
+      title: 'Disabled',
+      description: 'Organization sharing is disabled because database integration was removed.',
+      variant: 'destructive',
+    });
+    setSelectedOrg(null);
   };
 
-  const updateSharing = async (orgId: string | null) => {
-    setLoading(true);
-    const table = itemType === 'collection' ? 'custom_collections' : 'api_keys';
-    const { error } = await supabase
-      .from(table)
-      .update({ shared_with_org: orgId })
-      .eq('id', itemId);
-
-    if (error) {
-      toast({ title: 'Error', description: 'Failed to update sharing', variant: 'destructive' });
-    } else {
-      toast({ title: 'Success', description: orgId ? 'Shared with organization' : 'Sharing removed' });
-      
-      // Log audit event
-      const orgName = organizations.find(o => o.id === orgId)?.name || 'organization';
-      await logAuditEvent({
-        actionType: itemType === 'collection' ? 'collection.shared' : 'api_key.shared',
-        actionDetails: orgId 
-          ? `Shared ${itemType} with ${orgName}` 
-          : `Removed ${itemType} sharing`,
-        resourceType: itemType,
-        resourceId: itemId,
-        metadata: { organizationId: orgId, organizationName: orgName }
-      });
-      
-      onUpdate();
-    }
-    setLoading(false);
-  };
-
-
-  if (organizations.length === 0) return null;
-
+  // Previously returned null when no orgs. Now return a small disabled control
+  // so the UI explains why it’s missing.
   return (
-    <div className="space-y-3 p-3 bg-slate-800/30 rounded-lg border border-slate-700">
+    <div className="space-y-3 p-3 bg-slate-800/30 rounded-lg border border-slate-700 opacity-75">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Building2 className="w-4 h-4 text-blue-400" />
@@ -106,13 +71,14 @@ export function OrgShareToggle({ itemId, itemType, currentOrgId, userId, onUpdat
         </div>
         <Switch checked={isShared} onCheckedChange={handleToggle} disabled={loading} />
       </div>
+
       {isShared && organizations.length > 1 && (
-        <Select value={selectedOrg || ''} onValueChange={handleOrgSelect}>
+        <Select value={selectedOrg || ''} onValueChange={handleOrgSelect} disabled>
           <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
             <SelectValue placeholder="Select organization" />
           </SelectTrigger>
           <SelectContent className="bg-slate-800 border-slate-700">
-            {organizations.map(org => (
+            {organizations.map((org) => (
               <SelectItem key={org.id} value={org.id} className="text-white">
                 {org.name}
               </SelectItem>
@@ -120,6 +86,10 @@ export function OrgShareToggle({ itemId, itemType, currentOrgId, userId, onUpdat
           </SelectContent>
         </Select>
       )}
+
+      <p className="text-xs text-slate-400">
+        Disabled: organization sharing requires backend support.
+      </p>
     </div>
   );
 }
