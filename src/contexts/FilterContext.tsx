@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
 export interface FilterState {
@@ -49,24 +48,18 @@ export const useFilters = () => {
 export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
+
+  // Supabase removed: presets are now local/in-memory only (per-session).
   const [presets, setPresets] = useState<FilterPreset[]>([]);
 
   useEffect(() => {
-    if (user) loadPresets();
+    // With auth/db removed, do not attempt loading presets.
+    // Keep behavior deterministic: clear presets when user changes.
+    setPresets([]);
   }, [user]);
 
-  const loadPresets = async () => {
-    if (!user) return;
-    const { data } = await supabase
-      .from('filter_presets')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
-    if (data) setPresets(data.map(p => ({ id: p.id, name: p.name, filters: p.filters })));
-  };
-
   const updateFilter = (key: keyof FilterState, value: any) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   const clearFilters = () => setFilters(defaultFilters);
@@ -76,17 +69,16 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       toast.error('Please sign in to save presets');
       return;
     }
-    const { data, error } = await supabase
-      .from('filter_presets')
-      .insert({ user_id: user.id, name, filters })
-      .select()
-      .single();
-    if (error) {
-      toast.error('Failed to save preset');
-    } else {
-      setPresets(prev => [{ id: data.id, name: data.name, filters: data.filters }, ...prev]);
-      toast.success(`Preset "${name}" saved`);
-    }
+
+    // Auth/db removed: cannot persist. Save in-memory so UI still works during this session.
+    const newPreset: FilterPreset = {
+      id: `local_${crypto.randomUUID()}`,
+      name,
+      filters,
+    };
+
+    setPresets((prev) => [newPreset, ...prev]);
+    toast.success(`Preset "${name}" saved (local only)`);
   };
 
   const loadPreset = (preset: FilterPreset) => {
@@ -95,16 +87,11 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const deletePreset = async (id: string) => {
-    const { error } = await supabase.from('filter_presets').delete().eq('id', id);
-    if (error) {
-      toast.error('Failed to delete preset');
-    } else {
-      setPresets(prev => prev.filter(p => p.id !== id));
-      toast.success('Preset deleted');
-    }
+    setPresets((prev) => prev.filter((p) => p.id !== id));
+    toast.success('Preset deleted');
   };
 
-  const activeFilterCount = 
+  const activeFilterCount =
     filters.providers.length +
     filters.modelTypes.length +
     filters.useCases.length +
@@ -112,17 +99,19 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     (filters.performanceRange[0] > 0 || filters.performanceRange[1] < 100 ? 1 : 0);
 
   return (
-    <FilterContext.Provider value={{
-      filters,
-      setFilters,
-      updateFilter,
-      clearFilters,
-      presets,
-      savePreset,
-      loadPreset,
-      deletePreset,
-      activeFilterCount,
-    }}>
+    <FilterContext.Provider
+      value={{
+        filters,
+        setFilters,
+        updateFilter,
+        clearFilters,
+        presets,
+        savePreset,
+        loadPreset,
+        deletePreset,
+        activeFilterCount,
+      }}
+    >
       {children}
     </FilterContext.Provider>
   );
