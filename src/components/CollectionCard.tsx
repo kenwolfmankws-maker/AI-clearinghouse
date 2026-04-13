@@ -4,13 +4,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, Share2, Copy, Eye, EyeOff } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { Collection } from '@/pages/Collections';
 import { allModels } from '@/data/allModels';
 import { OrgShareToggle } from '@/components/OrgShareToggle';
 import { useAuth } from '@/contexts/AuthContext';
-import { logAuditEvent } from '@/lib/auditLogger';
 
 import {
   AlertDialog,
@@ -23,7 +21,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-
 interface CollectionCardProps {
   collection: Collection;
   onEdit: (collection: Collection) => void;
@@ -34,7 +31,10 @@ export const CollectionCard = ({ collection, onEdit, onUpdate }: CollectionCardP
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [sharing, setSharing] = useState(false);
+
+  // Supabase removed: role lookup is disabled, so only owner can edit.
   const [userRole, setUserRole] = useState<string | null>(null);
+
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -42,123 +42,57 @@ export const CollectionCard = ({ collection, onEdit, onUpdate }: CollectionCardP
   const isSharedWithOrg = !!collection.shared_with_org;
 
   useEffect(() => {
-    if (isSharedWithOrg && !isOwner) {
-      fetchUserRole();
-    }
+    // Without a backend, we can't resolve org role.
+    // Keep deterministic state:
+    setUserRole(null);
   }, [collection.shared_with_org, user?.id]);
 
-  const fetchUserRole = async () => {
-    const { data } = await supabase
-      .from('organization_members')
-      .select('role')
-      .eq('organization_id', collection.shared_with_org)
-      .eq('user_id', user?.id)
-      .single();
-    
-    if (data) setUserRole(data.role);
-  };
-
-  const canEdit = isOwner || userRole === 'admin';
+  const canEdit = isOwner; // Previously: isOwner || userRole === 'admin'
   const canDelete = isOwner;
 
-
-  const collectionModels = allModels.filter(m => collection.model_ids.includes(m.id));
+  const collectionModels = allModels.filter((m) => collection.model_ids.includes(m.id));
   const previewModels = collectionModels.slice(0, 4);
+
+  const disabledToast = (feature: string) => {
+    toast({
+      title: 'Disabled',
+      description: `${feature} is disabled because database integration was removed.`,
+      variant: 'destructive',
+    });
+  };
 
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      const { error } = await supabase
-        .from('custom_collections')
-        .delete()
-        .eq('id', collection.id);
-
-      if (error) throw error;
-
-      // Log audit event
-      await logAuditEvent({
-        actionType: 'collection.deleted',
-        actionDetails: `Deleted collection: ${collection.name}`,
-        resourceType: 'collection',
-        resourceId: collection.id,
-        metadata: { collectionName: collection.name, modelCount: collection.model_ids.length }
-      });
-
-      toast({
-        title: 'Collection deleted',
-        description: 'Your collection has been removed',
-      });
-      onUpdate();
-    } catch (error) {
-      console.error('Error deleting collection:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to delete collection',
-        variant: 'destructive',
-      });
+      disabledToast('Delete collection');
+      // no-op
     } finally {
       setDeleting(false);
       setShowDeleteDialog(false);
     }
   };
 
-
   const handleDuplicate = async () => {
-    try {
-      const { error } = await supabase
-        .from('custom_collections')
-        .insert({
-          user_id: collection.user_id,
-          name: `${collection.name} (Copy)`,
-          description: collection.description,
-          model_ids: collection.model_ids,
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: 'Collection duplicated',
-        description: 'A copy has been created',
-      });
-      onUpdate();
-    } catch (error) {
-      console.error('Error duplicating collection:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to duplicate collection',
-        variant: 'destructive',
-      });
-    }
+    disabledToast('Duplicate collection');
   };
 
   const handleShare = async () => {
     setSharing(true);
     try {
-      let shareToken = collection.share_token;
-      
-      if (!shareToken) {
-        shareToken = crypto.randomUUID();
-        const { error } = await supabase
-          .from('custom_collections')
-          .update({ share_token: shareToken, is_public: true })
-          .eq('id', collection.id);
-
-        if (error) throw error;
-      }
-
-      const shareUrl = `${window.location.origin}/collections/${shareToken}`;
+      // We *can* still generate a link locally, but without backend persistence it won't work.
+      // Keep UX consistent: copy current URL to clipboard and warn.
+      const shareUrl = `${window.location.origin}/collections/${collection.share_token || 'disabled'}`;
       await navigator.clipboard.writeText(shareUrl);
 
       toast({
-        title: 'Link copied!',
-        description: 'Share link copied to clipboard',
+        title: 'Copied (but disabled)',
+        description: 'Sharing is disabled because the backend was removed.',
       });
-      onUpdate();
     } catch (error) {
-      console.error('Error sharing collection:', error);
+      console.error('Error copying share link:', error);
       toast({
         title: 'Error',
-        description: 'Failed to generate share link',
+        description: 'Failed to copy link',
         variant: 'destructive',
       });
     } finally {
@@ -167,26 +101,7 @@ export const CollectionCard = ({ collection, onEdit, onUpdate }: CollectionCardP
   };
 
   const togglePublic = async () => {
-    try {
-      const { error } = await supabase
-        .from('custom_collections')
-        .update({ is_public: !collection.is_public })
-        .eq('id', collection.id);
-
-      if (error) throw error;
-
-      toast({
-        title: collection.is_public ? 'Collection made private' : 'Collection made public',
-      });
-      onUpdate();
-    } catch (error) {
-      console.error('Error toggling visibility:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to update visibility',
-        variant: 'destructive',
-      });
-    }
+    disabledToast(collection.is_public ? 'Make private' : 'Make public');
   };
 
   return (
@@ -199,9 +114,7 @@ export const CollectionCard = ({ collection, onEdit, onUpdate }: CollectionCardP
               <p className="text-sm text-slate-400 line-clamp-2">{collection.description}</p>
             </div>
             <div className="flex gap-2 ml-2">
-              {collection.is_public && (
-                <Badge variant="secondary">Public</Badge>
-              )}
+              {collection.is_public && <Badge variant="secondary">Public</Badge>}
               {!isOwner && isSharedWithOrg && (
                 <Badge variant="outline" className="text-green-400 border-green-400">
                   Shared {userRole ? `(${userRole})` : ''}
@@ -209,7 +122,6 @@ export const CollectionCard = ({ collection, onEdit, onUpdate }: CollectionCardP
               )}
             </div>
           </div>
-
 
           <div className="grid grid-cols-4 gap-2 mb-4">
             {previewModels.map((model) => (
@@ -223,13 +135,13 @@ export const CollectionCard = ({ collection, onEdit, onUpdate }: CollectionCardP
             <Badge variant="outline" className="text-blue-400 border-blue-400">
               {collection.model_ids.length} models
             </Badge>
-            <span className="text-xs text-slate-500">
-              {new Date(collection.updated_at).toLocaleDateString()}
-            </span>
+            <span className="text-xs text-slate-500">{new Date(collection.updated_at).toLocaleDateString()}</span>
           </div>
 
           {isOwner && (
             <div className="mb-4">
+              {/* This component likely uses Supabase internally. If you remove Supabase there too, it can stay.
+                  For now we keep it mounted; if it breaks, we'll disable it next. */}
               <OrgShareToggle
                 itemId={collection.id}
                 itemType="collection"
@@ -241,7 +153,13 @@ export const CollectionCard = ({ collection, onEdit, onUpdate }: CollectionCardP
           )}
 
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => onEdit(collection)} disabled={!canEdit} className="flex-1">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onEdit(collection)}
+              disabled={!canEdit}
+              className="flex-1"
+            >
               <Edit className="w-3 h-3 mr-1" />
               Edit
             </Button>
@@ -252,15 +170,13 @@ export const CollectionCard = ({ collection, onEdit, onUpdate }: CollectionCardP
             <Button size="sm" variant="outline" onClick={togglePublic} disabled={!canEdit}>
               {collection.is_public ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
             </Button>
-            <Button size="sm" variant="outline" onClick={handleDuplicate}>
+            <Button size="sm" variant="outline" onClick={handleDuplicate} disabled={!canEdit}>
               <Copy className="w-3 h-3" />
             </Button>
             <Button size="sm" variant="destructive" onClick={() => setShowDeleteDialog(true)} disabled={!canDelete}>
               <Trash2 className="w-3 h-3" />
             </Button>
           </div>
-
-
         </div>
       </Card>
 
