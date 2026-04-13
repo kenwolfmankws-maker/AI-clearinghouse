@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { User, Session } from '@supabase/supabase-js';
 import { sendWelcomeEmail } from '@/lib/emailService';
 
+type User = null;
+type Session = null;
 
 interface AuthContextType {
   user: User | null;
@@ -10,7 +10,6 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<any>;
   signIn: (email: string, password: string, rememberMe?: boolean) => Promise<any>;
-
   signOut: () => Promise<void>;
   updateProfile: (data: any) => Promise<any>;
 }
@@ -23,83 +22,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    }).catch((error) => {
-      console.error('Auth session error:', error);
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-
+    // Auth disabled: no external auth provider, so no session restoration.
+    setSession(null);
+    setUser(null);
+    setLoading(false);
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-        emailRedirectTo: `${window.location.origin}/verify-email`,
-      }
-    });
-    
-    if (data.user && !error) {
-      await supabase.from('user_profiles').insert({
-        id: data.user.id,
-        email,
-        full_name: fullName,
-        email_verified: false,
-      });
-      
-      // Send welcome email
+  const signUp = async (email: string, _password: string, fullName: string) => {
+    // Auth disabled: stubbed success response.
+    // Keep welcome email behavior non-blocking and safe.
+    try {
       sendWelcomeEmail(email, fullName, 'free');
+    } catch (_error) {
+      // Silently fail - email is optional and should not block build/runtime.
+      console.debug('Welcome email unavailable');
     }
-    
-    return { data, error };
+
+    return { data: null, error: null };
   };
 
-
-
-
-  const signIn = async (email: string, password: string, rememberMe = false) => {
-    const result = await supabase.auth.signInWithPassword({ email, password });
-    
-    if (result.data.user && !result.error) {
-      // Optional session tracking - non-blocking
-      try {
-        await supabase.from('sessions').insert({
-          user_id: result.data.user.id,
-          browser: navigator.userAgent.match(/(Chrome|Firefox|Safari|Edge|Opera)\/[\d.]+/)?.[0] || 'Unknown',
-          created_at: new Date().toISOString()
-        }).select().single();
-      } catch (error) {
-        // Silently fail - session tracking is optional
-        console.debug('Session tracking unavailable');
-      }
-    }
-    
-    return result;
+  const signIn = async (_email: string, _password: string, _rememberMe = false) => {
+    // Auth disabled: stubbed success response.
+    return { data: null, error: null };
   };
-
-
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    // Auth disabled: nothing to do.
+    setSession(null);
+    setUser(null);
   };
 
-  const updateProfile = async (profileData: any) => {
-    if (!user) return { error: 'No user' };
-    return await supabase.from('user_profiles').update(profileData).eq('id', user.id);
+  const updateProfile = async (_profileData: any) => {
+    // Auth disabled: no-op success response.
+    return { data: null, error: null };
   };
 
   return (
