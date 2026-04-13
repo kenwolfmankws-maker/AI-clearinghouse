@@ -6,7 +6,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { Collection } from '@/pages/Collections';
 import { allModels } from '@/data/allModels';
@@ -45,46 +44,27 @@ export const EditCollectionModal = ({ collection, isOpen, onClose, onUpdate }: E
 
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from('custom_collections')
-        .update({
-          name: name.trim(),
-          description: description.trim(),
-          model_ids: selectedModelIds,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', collection.id);
-
-      if (error) throw error;
-
+      // Supabase removed: no persistence.
       toast({
-        title: 'Collection updated',
-        description: 'Your changes have been saved',
-      });
-      onUpdate();
-      onClose();
-    } catch (error) {
-      console.error('Error updating collection:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to update collection',
+        title: 'Disabled',
+        description: 'Saving collections is disabled because database integration was removed.',
         variant: 'destructive',
       });
+
+      // Keep API compatibility with caller.
+      onUpdate();
+      onClose();
     } finally {
       setSaving(false);
     }
   };
 
   const toggleModel = (modelId: string) => {
-    setSelectedModelIds(prev =>
-      prev.includes(modelId)
-        ? prev.filter(id => id !== modelId)
-        : [...prev, modelId]
-    );
+    setSelectedModelIds((prev) => (prev.includes(modelId) ? prev.filter((id) => id !== modelId) : [...prev, modelId]));
   };
 
   const removeModel = (modelId: string) => {
-    setSelectedModelIds(prev => prev.filter(id => id !== modelId));
+    setSelectedModelIds((prev) => prev.filter((id) => id !== modelId));
   };
 
   return (
@@ -93,16 +73,11 @@ export const EditCollectionModal = ({ collection, isOpen, onClose, onUpdate }: E
         <DialogHeader>
           <DialogTitle>Edit Collection</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 flex-1 overflow-hidden flex flex-col">
           <div>
             <Label htmlFor="name">Collection Name</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="My Collection"
-            />
+            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="My Collection" />
           </div>
 
           <div>
@@ -119,8 +94,8 @@ export const EditCollectionModal = ({ collection, isOpen, onClose, onUpdate }: E
           <div className="flex-1 overflow-hidden flex flex-col">
             <Label className="mb-2">Selected Models ({selectedModelIds.length})</Label>
             <div className="flex flex-wrap gap-2 mb-3">
-              {selectedModelIds.map(modelId => {
-                const model = allModels.find(m => m.id === modelId);
+              {selectedModelIds.map((modelId) => {
+                const model = allModels.find((m) => m.id === modelId);
                 return model ? (
                   <Badge key={modelId} variant="secondary" className="gap-1">
                     {model.name}
@@ -133,7 +108,7 @@ export const EditCollectionModal = ({ collection, isOpen, onClose, onUpdate }: E
             <Label className="mb-2">Add Models</Label>
             <ScrollArea className="flex-1 border rounded-md p-3">
               <div className="space-y-2">
-                {allModels.map(model => (
+                {allModels.map((model) => (
                   <div key={model.id} className="flex items-center space-x-2">
                     <Checkbox
                       id={model.id}
@@ -150,7 +125,9 @@ export const EditCollectionModal = ({ collection, isOpen, onClose, onUpdate }: E
           </div>
 
           <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button variant="outline" onClick={onClose}>Cancel</Button>
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
             <Button onClick={handleSave} disabled={saving}>
               {saving ? 'Saving...' : 'Save Changes'}
             </Button>
