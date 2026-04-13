@@ -23,7 +23,6 @@ export interface Collection {
   updated_at: string;
 }
 
-
 export default function Collections() {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,62 +32,16 @@ export default function Collections() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      fetchCollections();
-    } else {
-      setLoading(false);
-    }
+    // Supabase removed: no backend collections. Keep deterministic.
+    setCollections([]);
+    setLoading(false);
   }, [user]);
 
   const fetchCollections = async () => {
-    try {
-      // Fetch user's own collections
-      const { data: ownCollections, error: ownError } = await supabase
-        .from('custom_collections')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('updated_at', { ascending: false });
-
-      if (ownError) throw ownError;
-
-      // Fetch user's organizations
-      const { data: orgMemberships } = await supabase
-        .from('organization_members')
-        .select('organization_id')
-        .eq('user_id', user?.id);
-
-      const orgIds = orgMemberships?.map(m => m.organization_id) || [];
-
-      // Fetch collections shared with user's organizations
-      let sharedCollections: Collection[] = [];
-      if (orgIds.length > 0) {
-        const { data: shared, error: sharedError } = await supabase
-          .from('custom_collections')
-          .select('*')
-          .in('shared_with_org', orgIds)
-          .neq('user_id', user?.id)
-          .order('updated_at', { ascending: false });
-
-        if (!sharedError && shared) {
-          sharedCollections = shared;
-        }
-      }
-
-      // Combine and deduplicate
-      const allCollections = [...(ownCollections || []), ...sharedCollections];
-      setCollections(allCollections);
-    } catch (error) {
-      console.error('Error fetching collections:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load collections',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
+    // Kept for component API compatibility.
+    setCollections([]);
+    setLoading(false);
   };
-
 
   if (!user) {
     return (
@@ -116,7 +69,17 @@ export default function Collections() {
               <h1 className="text-4xl font-bold text-white mb-2">My Collections</h1>
               <p className="text-slate-400">Organize and manage your AI model collections</p>
             </div>
-            <Button onClick={() => navigate('/')} className="bg-gradient-to-r from-blue-500 to-purple-600">
+            <Button
+              onClick={() => {
+                toast({
+                  title: 'Disabled',
+                  description: 'Collection creation is disabled because database integration was removed.',
+                  variant: 'destructive',
+                });
+                navigate('/');
+              }}
+              className="bg-gradient-to-r from-blue-500 to-purple-600"
+            >
               <Plus className="w-4 h-4 mr-2" />
               Create New
             </Button>
@@ -129,8 +92,10 @@ export default function Collections() {
           ) : collections.length === 0 ? (
             <div className="text-center py-12 bg-slate-800/50 rounded-lg border border-slate-700">
               <FolderOpen className="w-16 h-16 mx-auto mb-4 text-slate-400" />
-              <h3 className="text-xl font-semibold text-white mb-2">No collections yet</h3>
-              <p className="text-slate-400 mb-4">Start by selecting models and creating your first collection</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Collections disabled</h3>
+              <p className="text-slate-400 mb-4">
+                Collections require backend storage, which was removed. You can still browse models.
+              </p>
               <Button onClick={() => navigate('/')} className="bg-gradient-to-r from-blue-500 to-purple-600">
                 Browse Models
               </Button>
@@ -150,6 +115,8 @@ export default function Collections() {
         </div>
       </div>
       <Footer />
+
+      {/* Modal can remain for now; if it imports Supabase internally, we’ll disable it next */}
       {editingCollection && (
         <EditCollectionModal
           collection={editingCollection}
