@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Mail, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { Mail, AlertCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface EmailVerificationBannerProps {
@@ -11,6 +10,7 @@ interface EmailVerificationBannerProps {
 }
 
 export function EmailVerificationBanner({ isVerified, userEmail }: EmailVerificationBannerProps) {
+  // Supabase removed: email verification resend is disabled.
   const [sending, setSending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const { toast } = useToast();
@@ -20,21 +20,16 @@ export function EmailVerificationBanner({ isVerified, userEmail }: EmailVerifica
 
     setSending(true);
     try {
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: userEmail,
-      });
-
-      if (error) throw error;
-
       toast({
-        title: 'Verification email sent',
-        description: `Check your inbox at ${userEmail}`,
+        title: 'Disabled',
+        description: 'Email verification is disabled because authentication/database integration was removed.',
+        variant: 'destructive',
       });
 
+      // Preserve the existing cooldown UX so users can’t spam-click.
       setCooldown(60);
       const interval = setInterval(() => {
-        setCooldown(prev => {
+        setCooldown((prev) => {
           if (prev <= 1) {
             clearInterval(interval);
             return 0;
@@ -42,13 +37,6 @@ export function EmailVerificationBanner({ isVerified, userEmail }: EmailVerifica
           return prev - 1;
         });
       }, 1000);
-
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to send verification email',
-        variant: 'destructive',
-      });
     } finally {
       setSending(false);
     }
@@ -62,7 +50,7 @@ export function EmailVerificationBanner({ isVerified, userEmail }: EmailVerifica
     <Alert className="bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800">
       <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-500" />
       <AlertDescription className="flex items-center justify-between text-yellow-800 dark:text-yellow-200">
-        <span>Please verify your email address to access all features</span>
+        <span>Please verify your email address to access all features ({userEmail || '—'})</span>
         <Button
           onClick={handleResendVerification}
           disabled={sending || cooldown > 0}
@@ -70,11 +58,7 @@ export function EmailVerificationBanner({ isVerified, userEmail }: EmailVerifica
           size="sm"
           className="ml-4"
         >
-          {sending ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-          ) : (
-            <Mail className="h-4 w-4 mr-2" />
-          )}
+          {sending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Mail className="h-4 w-4 mr-2" />}
           {cooldown > 0 ? `Resend (${cooldown}s)` : 'Resend Email'}
         </Button>
       </AlertDescription>
