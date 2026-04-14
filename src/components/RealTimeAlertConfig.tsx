@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Bell, Mail, MessageSquare, Plus, Trash2, AlertTriangle } from 'lucide-react';
-import { APIAlertService, AlertRule, NotificationPreference } from '@/lib/apiAlertService';
+
 
 export function RealTimeAlertConfig() {
   const [rules, setRules] = useState<AlertRule[]>([]);
