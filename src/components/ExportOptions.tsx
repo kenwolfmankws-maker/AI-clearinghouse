@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Download, FileText, Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { APIUsageTracker } from '@/lib/apiUsageTracker';
-import { APIAnalyticsExporter, ExportFilters } import { APIAnalyticsExporter, ExportFilters } from "@/lib/tagAnalyticsExport";
+import { APIAnalyticsExporter, ExportFilters } from "@/lib/tagAnalyticsExport";
 
 export function ExportOptions() {
   const [startDate, setStartDate] = useState<Date>();
@@ -23,7 +23,7 @@ export function ExportOptions() {
     };
 
     const reportData = APIAnalyticsExporter.generateReportData(records, filters);
-    
+
     if (format === 'csv') {
       APIAnalyticsExporter.downloadCSV(reportData);
     } else {
@@ -81,7 +81,7 @@ export function ExportOptions() {
 
           <div className="space-y-2">
             <Label>Format</Label>
-            <Select value={format} onValueChange={(v) => setFormat(v as 'csv' | 'pdf')}>
+            <Select value={format} onValueChange={(v) => setFormat(v as 'csv' | 'pdf')}>  
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
