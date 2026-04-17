@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Download } from 'lucide-react';
-import { exportChartAsSVG } from '@/lib/chartExport';
+import { exportChartAsSVG } from import ... from '../lib/chartExport'
 
 interface ModelPopularityProps {
   logs: any[];
