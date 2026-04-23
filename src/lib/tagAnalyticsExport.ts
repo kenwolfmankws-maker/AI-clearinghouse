@@ -15,6 +15,13 @@ export interface ExportOptions {
   };
 }
 
+export interface ExportFilters {
+  startDate?: Date;
+  endDate?: Date;
+  keyNames?: string[];
+  components?: string[];
+}
+
 export const tagAnalyticsExport = {
   exportToCSV: (data: any[], usageOverTime: any[], options: ExportOptions) => {
     let csv = '';
@@ -166,7 +173,7 @@ function filterByDateRange(data: any[], dateRange: { start: Date | null; end: Da
 
 function filterUsageByDateRange(data: any[], dateRange: { start: Date | null; end: Date | null }) {
   if (!dateRange.start && !dateRange.end) return data;
-  
+
   return data.filter(item => {
     const itemDate = new Date(item.date);
     if (dateRange.start && itemDate < dateRange.start) return false;
@@ -174,3 +181,58 @@ function filterUsageByDateRange(data: any[], dateRange: { start: Date | null; en
     return true;
   });
 }
+
+// API Analytics Exporter for ExportOptions.tsx
+export const APIAnalyticsExporter = {
+  generateReportData: (records: any[], filters: ExportFilters) => {
+    let filtered = records;
+
+    if (filters.startDate || filters.endDate) {
+      filtered = filtered.filter(record => {
+        const recordDate = new Date(record.lastAccessed);
+        if (filters.startDate && recordDate < filters.startDate) return false;
+        if (filters.endDate && recordDate > filters.endDate) return false;
+        return true;
+      });
+    }
+
+    if (filters.keyNames && filters.keyNames.length > 0) {
+      filtered = filtered.filter(record => filters.keyNames!.includes(record.keyName));
+    }
+
+    if (filters.components && filters.components.length > 0) {
+      filtered = filtered.filter(record => {
+        const recordComponents = Object.keys(record.componentUsage || {});
+        return filters.components!.some(c => recordComponents.includes(c));
+      });
+    }
+
+    return filtered;
+  },
+
+  downloadCSV: (data: any[]) => {
+    let csv = 'API Usage Report\n';
+    csv += `Generated: ${new Date().toLocaleString()}\n\n`;
+    csv += 'Key Name,Access Count,Last Accessed,Estimated Cost,Rate Limit\n';
+
+    data.forEach(record => {
+      csv += `"${record.keyName}",${record.accessCount},"${record.lastAccessed}",${record.estimatedCost},${record.rateLimit || 'N/A'}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `api-usage-report-${Date.now()}.csv`;
+    link.click();
+  },
+
+  exportToPDF: (data: any[]) => {
+    // Return JSON representation for now
+    // Real implementation would use jsPDF
+    return JSON.stringify({
+      title: 'API Usage Report',
+      generated: new Date().toISOString(),
+      data: data
+    });
+  }
+};
