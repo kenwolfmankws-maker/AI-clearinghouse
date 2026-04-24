@@ -9,4 +9,4 @@ export const exportChatToTXT = (data: any) => {
 export const exportChatToJSON = (data: any) => {
   return JSON.stringify(data, null, 2);
 };
-}
+
