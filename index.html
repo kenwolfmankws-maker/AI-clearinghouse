@@ -1,24 +1,351 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Clearinghouse Hub</title>
-    <meta name="description" content="Centralize access to a variety of AI tools and resources in one app. Stay updated with the latest in AI technology." />
-    <link rel="icon" type="image/svg+xml" href="/placeholder.svg" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Clearinghouse | Practical AI Workflows for Small Teams</title>
+  <meta
+    name="description"
+    content="AI Clearinghouse helps founders and small teams implement practical, ethical AI workflows that reduce busywork and create measurable weekly progress."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --ink: #112039;
+      --ink-soft: #3a4860;
+      --surface: #f4f0e8;
+      --surface-card: #fffdf7;
+      --line: #d8cdb7;
+      --accent: #c74a2e;
+      --accent-deep: #8e2f1c;
+      --ok: #2e6f52;
+      --shadow: 0 18px 42px rgba(17, 32, 57, 0.14);
+      --radius: 16px;
+    }
 
-    <meta property="og:title" content="AI Clearinghouse Hub" />
-    <meta property="og:description" content="Centralize access to a variety of AI tools and resources in one app. Stay updated with the latest in AI technology." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og.jpg" />
+    * {
+      box-sizing: border-box;
+    }
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/og.jpg" />
-  </head>
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(199, 74, 46, 0.16), transparent 28%),
+        radial-gradient(circle at 85% 0%, rgba(46, 111, 82, 0.12), transparent 34%),
+        linear-gradient(180deg, #f7f2e9 0%, #efe7d8 100%);
+      color: var(--ink);
+      line-height: 1.5;
+    }
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    .wrap {
+      width: min(1080px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 4.5rem 0 2.5rem;
+      animation: rise 0.7s ease-out both;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    h1,
+    h2 {
+      font-family: "IBM Plex Serif", serif;
+      line-height: 1.08;
+      margin: 0.8rem 0;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4.7vw, 4rem);
+      max-width: 14ch;
+    }
+
+    .lead {
+      color: var(--ink-soft);
+      max-width: 62ch;
+      font-size: 1.06rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.8rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 0.6rem 1rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus-visible {
+      background: var(--accent-deep);
+      transform: translateY(-1px);
+    }
+
+    .muted {
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .offers {
+      grid-template-columns: repeat(12, 1fr);
+      margin: 1.8rem 0 2.2rem;
+    }
+
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      animation: rise 0.7s ease-out both;
+    }
+
+    .card:nth-of-type(2) {
+      animation-delay: 0.1s;
+    }
+
+    .offer-main {
+      grid-column: span 8;
+    }
+
+    .offer-starter {
+      grid-column: span 4;
+    }
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0.3rem 0;
+      color: var(--accent-deep);
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    ul {
+      margin: 0.6rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .proof {
+      margin: 2rem 0;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .proof .item {
+      background: rgba(255, 253, 247, 0.72);
+      border: 1px dashed #c6bda8;
+      border-radius: 14px;
+      padding: 1rem;
+      animation: rise 0.7s ease-out both;
+    }
+
+    .proof .item:nth-of-type(2) {
+      animation-delay: 0.1s;
+    }
+
+    .proof .item:nth-of-type(3) {
+      animation-delay: 0.2s;
+      grid-column: span 2;
+    }
+
+    .proof strong {
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+
+    .contact {
+      margin: 2.4rem 0 3.2rem;
+      background: linear-gradient(130deg, #17395c, #1c5e4d);
+      color: #f8fbff;
+      border-radius: 20px;
+      padding: 1.4rem;
+      animation: rise 0.7s ease-out 0.15s both;
+    }
+
+    .contact h2 {
+      margin-top: 0;
+    }
+
+    .contact p {
+      margin-bottom: 1rem;
+      max-width: 60ch;
+    }
+
+    .contact .btn-primary {
+      background: #ffd082;
+      color: #3d2505;
+      box-shadow: none;
+    }
+
+    .contact .btn-primary:hover,
+    .contact .btn-primary:focus-visible {
+      background: #ffc264;
+      transform: translateY(-1px);
+    }
+
+    footer {
+      padding: 0 0 2.3rem;
+      color: #5a667a;
+      font-size: 0.88rem;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .offer-main,
+      .offer-starter,
+      .proof .item:nth-of-type(3) {
+        grid-column: span 12;
+      }
+
+      .proof {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding-top: 3.4rem;
+      }
+
+      .card,
+      .contact {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="headline">
+      <span class="eyebrow">AI Clearinghouse</span>
+      <h1 id="headline">Practical, ethical AI workflows for founders and small teams.</h1>
+      <p class="lead">
+        We reduce busywork, improve decision quality, and create measurable weekly progress by implementing AI systems your team can actually run without adding headcount.
+      </p>
+      <div class="cta-row">
+        <a
+          class="btn btn-primary"
+          href="mailto:hello@aiclearinghouse.pro?subject=Request%20a%20Workflow%20Audit"
+          >Request a Workflow Audit</a
+        >
+        <span class="muted">Primary response goal: one discovery call scheduled.</span>
+      </div>
+    </section>
+
+    <section class="offers grid" aria-label="Launch offers">
+      <article class="card offer-main">
+        <h2>Flagship: AI Workflow Sprint (30-Day)</h2>
+        <p class="price">USD 4,800 fixed fee</p>
+        <p>
+          Build and deploy up to three high-value AI workflow automations with team onboarding and a two-week support window.
+        </p>
+        <ul>
+          <li>Week 1: audit, constraints mapping, KPI baseline, implementation blueprint</li>
+          <li>Weeks 2 and 3: build, test, and integrate prioritized automations</li>
+          <li>Week 4: training session, handoff playbook, launch tuning</li>
+          <li>Payment terms: 50% at kickoff, 50% at Week 3 handoff</li>
+        </ul>
+      </article>
+
+      <article class="card offer-starter">
+        <h3>Starter: AI Clarity Session</h3>
+        <p class="price">USD 150</p>
+        <p>60 to 90 minutes + follow-up setup notes in 48 hours.</p>
+        <ul>
+          <li>Review current workflows and blockers</li>
+          <li>Get a personalized AI action plan</li>
+          <li>Ideal for teams wanting low-risk first momentum</li>
+        </ul>
+      </article>
+    </section>
+
+    <section aria-labelledby="proof" class="proof grid">
+      <h2 id="proof" style="grid-column: span 2; margin-bottom: 0.2rem;">Proof and Trust Assets</h2>
+      <div class="item">
+        <strong>Workflow Audit Blueprint (sample)</strong>
+        See exactly how current-state bottlenecks are mapped to measurable workflow improvements.
+      </div>
+      <div class="item">
+        <strong>Automation Playbook Excerpt</strong>
+        Review deliverable format: acceptance checks, handoff instructions, and team-ready usage notes.
+      </div>
+      <div class="item">
+        <strong>Measurement Method</strong>
+        Baseline-to-post-launch tracking for one core KPI: time saved, turnaround speed, or error reduction.
+      </div>
+    </section>
+
+    <section class="contact" aria-labelledby="contact">
+  <h2 id="contact">Start with one workflow. Measure results in 30 days.</h2>
+
+  <p>
+    Send a short note with your current process pain point and team size. You will receive a next-step recommendation and call scheduling options.
+  </p>
+
+  <p><em>Takes 60 seconds. Just tell me your biggest workflow headache.</em></p>
+
+  <a class="btn btn-primary" href="mailto:hello@aiclearinghouse.pro?subject=Workflow%20Audit%20Request">
+    Request a Workflow Audit
+  </a>
+      
+    </section>
+
+    <footer>
+      AI Clearinghouse | Practical implementation over AI hype.
+    </footer>
+  </main>
+</body>
 </html>
