@@ -25,3 +25,8 @@ dist-ssr
 
 # Standalone apps that do not belong in this repository
 voice-studio/
+
+# Environment files
+.env
+.env.*
+!.env.example
