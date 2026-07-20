@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judgment Gate | AI Clearinghouse</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            color-scheme: light;
+            --indigo: #667eea;
+            --violet: #764ba2;
+            --ink: #202333;
+            --muted: #667085;
+            --line: #e3e6ef;
+            --surface: #ffffff;
+            --soft: #f7f8fc;
+            --danger: #b42318;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 24px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--ink);
+            background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+        }
+
+        .shell {
+            width: min(1040px, 100%);
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 20px;
+            background: var(--surface);
+            box-shadow: 0 20px 60px rgba(25, 20, 55, 0.3);
+        }
+
+        header {
+            padding: 28px clamp(22px, 5vw, 48px);
+            color: #fff;
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+        }
+
+        header p, header h1 { margin: 0; }
+        header h1 { margin-top: 5px; font-size: clamp(1.65rem, 4vw, 2.25rem); }
+        .eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; }
+        .subtitle { margin-top: 8px; line-height: 1.5; opacity: 0.9; }
+
+        main { padding: clamp(22px, 5vw, 48px); }
+        form { display: grid; gap: 12px; }
+        label { font-size: 1rem; font-weight: 700; }
+
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            resize: vertical;
+            padding: 16px;
+            border: 2px solid var(--line);
+            border-radius: 12px;
+            font: inherit;
+            line-height: 1.55;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.14);
+        }
+
+        .form-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .hint { color: var(--muted); font-size: 0.84rem; }
+
+        button {
+            flex: 0 0 auto;
+            min-height: 46px;
+            padding: 0 24px;
+            border: 0;
+            border-radius: 999px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+        }
+
+        button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(102, 126, 234, 0.35); }
+        button:focus-visible { outline: 3px solid rgba(102, 126, 234, 0.35); outline-offset: 3px; }
+        button:disabled { cursor: wait; opacity: 0.65; }
+
+        .status { min-height: 24px; margin: 18px 0 0; font-weight: 600; }
+        .status.loading { color: var(--violet); }
+        .status.error { color: var(--danger); }
+
+        .results { display: none; margin-top: 24px; }
+        .results.visible { display: block; }
+        .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .rating-row h2 { margin: 0; font-size: 1.1rem; }
+
+        .rating {
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .rating.green { color: #067647; background: #ecfdf3; }
+        .rating.yellow { color: #854a0e; background: #fffaeb; }
+        .rating.red { color: #b42318; background: #fef3f2; }
+
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .card { padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--soft); }
+        .card.full { grid-column: 1 / -1; }
+        .card h3 { margin: 0 0 10px; font-size: 1rem; color: #3c4160; }
+        .card p { margin: 0; line-height: 1.65; }
+        .card ul, .card ol { margin: 0; padding-left: 1.3rem; }
+        .card li { padding-left: 4px; line-height: 1.55; }
+        .card li + li { margin-top: 8px; }
+
+        @media (max-width: 680px) {
+            body { padding: 0; background: #fff; }
+            .shell { min-height: 100vh; border-radius: 0; box-shadow: none; }
+            .grid { grid-template-columns: 1fr; }
+            .card.full { grid-column: auto; }
+            .form-footer { align-items: stretch; flex-direction: column; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <header>
+            <p class="eyebrow">AI Clearinghouse</p>
+            <h1>Judgment Gate</h1>
+            <p class="subtitle">Identify what can be automated safely and where accountable human judgment must remain.</p>
+        </header>
+
+        <main>
+            <form id="workflowForm">
+                <label for="workflow">Describe the workflow</label>
+                <textarea id="workflow" name="workflow" maxlength="6000" required placeholder="Explain the goal, steps, data involved, decisions, people affected, and any actions the system may take."></textarea>
+                <div class="form-footer">
+                    <span class="hint">Up to 6,000 characters</span>
+                    <button id="analyzeButton" type="submit">Analyze Workflow</button>
+                </div>
+            </form>
+
+            <p id="status" class="status" role="status" aria-live="polite"></p>
+
+            <section id="results" class="results" aria-labelledby="resultsTitle">
+                <div class="rating-row">
+                    <h2 id="resultsTitle">Governance rating</h2>
+                    <span id="governanceRating" class="rating"></span>
+                </div>
+                <div class="grid">
+                    <article class="card full"><h3>Purpose</h3><p id="purpose"></p></article>
+                    <article class="card"><h3>Safe automation</h3><ul id="safeAutomation"></ul></article>
+                    <article class="card"><h3>Human judgment gates</h3><ul id="humanJudgmentGates"></ul></article>
+                    <article class="card"><h3>Risks and boundaries</h3><ul id="risksAndBoundaries"></ul></article>
+                    <article class="card"><h3>Recommended operating plan</h3><ol id="recommendedOperatingPlan"></ol></article>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const form = document.getElementById('workflowForm');
+        const workflow = document.getElementById('workflow');
+        const button = document.getElementById('analyzeButton');
+        const status = document.getElementById('status');
+        const results = document.getElementById('results');
+        const rating = document.getElementById('governanceRating');
+
+        function renderList(id, values) {
+            const list = document.getElementById(id);
+            list.replaceChildren();
+            values.forEach((value) => {
+                const item = document.createElement('li');
+                item.textContent = value;
+                list.appendChild(item);
+            });
+        }
+
+        function renderAssessment(data) {
+            rating.textContent = data.governanceRating;
+            rating.className = 'rating';
+            if (['green', 'yellow', 'red'].includes(data.governanceRating)) {
+                rating.classList.add(data.governanceRating);
+            }
+
+            document.getElementById('purpose').textContent = data.purpose;
+            renderList('safeAutomation', data.safeAutomation);
+            renderList('humanJudgmentGates', data.humanJudgmentGates);
+            renderList('risksAndBoundaries', data.risksAndBoundaries);
+            renderList('recommendedOperatingPlan', data.recommendedOperatingPlan);
+            results.classList.add('visible');
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const description = workflow.value.trim();
+            if (!description) return;
+
+            button.disabled = true;
+            workflow.disabled = true;
+            results.classList.remove('visible');
+            status.className = 'status loading';
+            status.textContent = 'Analyzing workflow…';
+
+            try {
+                const response = await fetch('/api/judgment-gate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ workflow: description })
+                });
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(typeof data.error === 'string' ? data.error : 'The workflow could not be analyzed.');
+                }
+
+                renderAssessment(data);
+                status.className = 'status';
+                status.textContent = '';
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = error instanceof Error ? error.message : 'Unable to analyze the workflow right now.';
+            } finally {
+                button.disabled = false;
+                workflow.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
