@@ -145,6 +145,7 @@
             <form id="workflowForm">
                 <label for="workflow">Describe the workflow</label>
                 <textarea id="workflow" name="workflow" maxlength="6000" required placeholder="Explain the goal, steps, data involved, decisions, people affected, and any actions the system may take."></textarea>
+                <p class="hint">Do not submit confidential, personal, or sensitive information.</p>
                 <div class="form-footer">
                     <span class="hint">Up to 6,000 characters</span>
                     <button id="analyzeButton" type="submit">Analyze Workflow</button>
@@ -165,6 +166,7 @@
                     <article class="card"><h3>Risks and boundaries</h3><ul id="risksAndBoundaries"></ul></article>
                     <article class="card"><h3>Recommended operating plan</h3><ol id="recommendedOperatingPlan"></ol></article>
                 </div>
+                <p class="hint">Judgment Gate supports human decision-making. Its assessment is guidance, not a guarantee of safety or legal compliance.</p>
             </section>
         </main>
     </div>
