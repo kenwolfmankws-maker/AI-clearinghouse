@@ -59,6 +59,29 @@
       animation: rise 0.7s ease-out both;
     }
 
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(260px, 1fr);
+      gap: clamp(1.5rem, 4vw, 3.5rem);
+      align-items: start;
+    }
+
+    .hero-artwork {
+      margin: 0;
+      padding: 0.45rem;
+      background: var(--surface-card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-artwork img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
     .eyebrow {
       display: inline-block;
       font-size: 0.78rem;
@@ -250,10 +273,21 @@
     }
 
     @media (max-width: 900px) {
+      .hero-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-artwork {
+        width: min(100%, 540px);
+      }
+
       .offer-main,
-      .offer-starter,
-      .proof .item:nth-of-type(3) {
+      .offer-starter {
         grid-column: span 12;
+      }
+
+      .proof .item:nth-of-type(3) {
+        grid-column: auto;
       }
 
       .proof {
@@ -276,21 +310,33 @@
 <body>
   <main class="wrap">
     <section class="hero" aria-labelledby="headline">
-      <span class="eyebrow">AI Clearinghouse — Purpose Before Power<sup>™</sup></span>
-      <h1 id="headline">Practical, ethical AI workflows for founders and small teams.</h1>
-      <p class="lead">
-        We reduce busywork, improve decision quality, and create measurable weekly progress by implementing AI systems your team can actually run without adding headcount.
-      </p>
-      <div class="cta-row">
-        <a
-          class="btn btn-primary"
-          href="https://docs.google.com/forms/d/e/1FAIpQLSfXQ70bn5QH7C1mmLOhyf3bhUlWALE0zef6nb6p7QLc0-hb1w/viewform?usp=publish-editor"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Request a Workflow Audit</a
-        >
-        <a class="btn btn-primary" href="/judgment-gate/">Try the Judgment Gate</a>
-        <span class="muted">Purpose Before Power<sup>™</sup>. Human judgment remains in the loop.</span>
+      <div class="hero-layout">
+        <div>
+          <span class="eyebrow">AI Clearinghouse — Purpose Before Power<sup>™</sup></span>
+          <h1 id="headline">Practical, ethical AI workflows for founders and small teams.</h1>
+          <p class="lead">
+            We reduce busywork, improve decision quality, and create measurable weekly progress by implementing AI systems your team can actually run without adding headcount.
+          </p>
+          <div class="cta-row">
+            <a
+              class="btn btn-primary"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfXQ70bn5QH7C1mmLOhyf3bhUlWALE0zef6nb6p7QLc0-hb1w/viewform?usp=publish-editor"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Request a Workflow Audit</a
+            >
+            <a class="btn btn-primary" href="/judgment-gate/">Try the Judgment Gate</a>
+            <span class="muted">Purpose Before Power<sup>™</sup>. Human judgment remains in the loop.</span>
+          </div>
+        </div>
+        <figure class="hero-artwork">
+          <img
+            src="/purpose-before-power.webp"
+            width="1212"
+            height="1298"
+            alt="Purpose Before Power—technology is the tool, judgment is the handle, humanity is the reason."
+          />
+        </figure>
       </div>
     </section>
 
