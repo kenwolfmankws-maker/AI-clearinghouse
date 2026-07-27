@@ -49,11 +49,6 @@ This workspace is a saved/compiled front‑end bundle (not the source repo). Tre
 - Advanced overrides:
   - `?bundle=<path>` to specify a custom bundle URL.
   - `?eventsPath=<path>` to specify a custom events SDK URL.
-cd "C:\Users\kensm\OneDrive\Documents\GitHub\AI-clearinghouse"
-
-git add .
-git commit -m "Planted Rosie’s Garden — first bloom inside the Hub 🌿"
-git push origin main
 
 ## Supabase runtime config (optional)
 - Provide runtime configuration without rebuilding:
